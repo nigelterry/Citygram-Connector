@@ -69,7 +69,7 @@ Trait SearchTrait
 
         if ($this->days) {
             $period_start = new \MongoDate(max(time() - $this->days * 24 * 60 * 60, 0));
-//            $query->where(['datetime' => ['$gte' => $period_start]]);
+            $query->where(['datetime' => ['$gte' => $period_start]]);
         }
 
         if ($this->ignore) {
