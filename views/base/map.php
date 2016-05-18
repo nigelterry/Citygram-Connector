@@ -28,8 +28,8 @@ use dosamigos\leaflet\PluginManager;
 
 // first lets setup the center of our map
 $center = new LatLng([
-    'lat' => isset($model->center) ? $model->center['coordinates'][1] : $model->geometry['coordinates'][1],
-    'lng' => isset($model->center) ? $model->center['coordinates'][0] : $model->geometry['coordinates'][0],
+    'lat' => isset($model->center['coordinates'][1]) ? $model->center['coordinates'][1] : $model->geometry['coordinates'][1],
+    'lng' => isset($model->center['coordinates'][0]) ? $model->center['coordinates'][0] : $model->geometry['coordinates'][0],
 ]);
 
 // now lets create a marker that we are going to place on our map
@@ -98,7 +98,7 @@ $leaflet->appendJs(isset(Yii::$app->request->queryParams['query_limit']) ?
     'var query_limit = ""' . ';');
 $leaflet->appendJs(file_get_contents('js/maptools.js'));
 
-if (isset($model->center)) {
+if (isset($model->center['coordinates'][0])) {
     $polygon = new Polygon();
     $latlng = $model->geometry['coordinates'][0];
     $a = [];

@@ -35,6 +35,9 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
+                    ['label' => 'Crime Reports', 'url' => ['crime-message/index']],
+                    ['label' => 'Permit Applications', 'url' => ['permit-message/index']],
+                    ['label' => 'Rezoning Requests', 'url' => ['zoning-message/index']],
                     ['label' => 'Home', 'url' => ['/site/index']],
                     ['label' => 'About', 'url' => ['/site/about']],
                     ['label' => 'Contact', 'url' => ['/site/contact']],

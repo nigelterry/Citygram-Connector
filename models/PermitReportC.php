@@ -79,7 +79,38 @@ class PermitReportC extends PermitReport
         return new \MongoDate(strtotime($properties->applieddate));
     }
 
-    public function download($days)
+    public function id($record){
+        return 'Cary_' . $record->fields->permitnum;
+    }
+
+    public function properties($record){
+        return (object)$record->fields;
+    }
+
+    public function geometry($record){
+        return (object)($record->geometry ?? null);
+    }
+
+    public function other($record){
+        $other = new \stdClass();
+        $other->datasetid = $record->datasetid;
+        $other->recordid = $record->recordid;
+        $other->record_timestamp = $record->record_timestamp;
+        return $other;
+    }
+
+    public function getData($days, $start, $rows, &$nhits){
+        $url = 'https://data.townofcary.org/api/records/1.0/search/?dataset=permit-applications' .
+               '&q=' . urlencode("applieddate > #now(days=-$days)") .
+               '&sort=applieddate' .
+               '&start=' . $start . '&rows=' . $rows;
+        $data = json_decode(file_get_contents($url));
+        $nhits = $data->nhits;
+        return $data->records;
+    }
+
+
+    /*public function download($days)
     {
         proc_nice(19);
         ini_set('max_execution_time', 1000);
@@ -137,5 +168,5 @@ class PermitReportC extends PermitReport
         } while (count($records) != 0);
 
         return ['total' => $nhits, 'new' => $new, 'updates' => $updates, 'hasgeo' => $hasgeo, 'days' => $days];
-    }
+    }*/
 }

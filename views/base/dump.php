@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => ['index']];
         } else {
             $n = $model->config->messageUrl;
             echo '&nbsp' . Html::a('Message', [$n . '/dump', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
+            echo '&nbsp' . Html::a('Map', [$n . '/map', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
         }
         ?>
     </p>
