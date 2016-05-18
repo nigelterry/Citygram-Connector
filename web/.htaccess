@@ -1,0 +1,14 @@
+<ifModule mod_rewrite.c>
+# Turn on the engine:
+RewriteEngine on
+#Fix earlier url issues
+RewriteRule ^crime_message/(.*)$ /crime-message/$1 [L,R=301,NC]
+RewriteRule ^crime_reports/(.*)$ /crime-message/$1 [L,R=301,NC]
+RewriteRule ^crime-reports/(.*)$ /crime-message/$1 [L,R=301,NC]
+RewriteRule ^permit_message/(.*)$ /permit-message/$1 [L,R=301,NC]
+# Don't perform redirects for files and directories that exist:
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# For everything else, redirect to index.php:
+RewriteRule ^(.*)$ index.php/$1
+</ifModule>
