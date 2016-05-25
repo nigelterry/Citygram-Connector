@@ -119,11 +119,9 @@ abstract class Message extends Base
                 $this->short_url = $goo->id;
             } else {
                 $response = $this->createUrl($this->long_url, 'json', 'Map of Crime Report ' . $this->id);
-                if ($response->status != "success") {
+                if (!isset($response->status) || $response->status != "success") {
                     file_put_contents(__DIR__ . '/../runtime/logs/trg.pw.error.log', ("\n\n" . date('l jS \of F Y h:i:s A') .
                         "\n" . print_r($response, true)), FILE_APPEND);
-                } else {
-                    while(false);
                 }
                 $this->short_url = $response->shorturl;
             }

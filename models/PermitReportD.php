@@ -39,12 +39,57 @@ class PermitReportD extends PermitReport
     {
         return array_merge(parent::attributeLabels(), [
             '_id' => 'ID',
+	        'id' => 'Permit Id',
             'dataset' => 'Data Set',
-            "properties.datasetid" => 'Dataset ID'
+            "properties.datasetid" => 'Dataset ID',
+	        'properties.siteadd' => 'Site Addr',
+	        'properties.p_descript' => 'Legal Description'
         ]);
     }
 
-    public function title($url)
+	public function viewAttributes()
+	{
+		return array_merge( [
+			'properties.siteadd',
+			'properties.p_descript',
+			'properties.status'
+		], parent::viewAttributes());
+	}
+
+	public function indexAttributes(){
+		return [
+			[ 'class' => 'yii\grid\SerialColumn' ],
+			[ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Incident Date / Time' ],
+			'id',
+//			'type',
+			'dataset',
+			'properties.title',
+//            'short_url',
+			'properties.status',
+			'properties.failedFetch',
+			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
+			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
+			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
+			[
+				'class'    => 'yii\grid\ActionColumn',
+				'template' => '{view} {dump} {map} {item} {update} {delete}',
+				'buttons'  => [
+					'map'  => function ( $url, $model, $key ) {
+						return ( isset( $model->geometry['coordinates'][0] ) &&
+						         $model->config->hasMap ) ? Html::a( 'Map', $url ) : '';
+					},
+					'dump' => function ( $url, $model, $key ) {
+						return Html::a( 'Dump', $url );
+					},
+					/*					'item' => function ( $url, $model, $key ) {
+											return Html::a( 'Item', [$model->source_type .'/item', 'id' => (string)$model->source_id] );
+										},*/
+				],
+			],
+		];
+	}
+
+	public function title($url)
     {
         $properties = (object)$this->properties;
         if (!isset($properties->siteadd)) {
@@ -76,74 +121,179 @@ class PermitReportD extends PermitReport
     public function datetime($record)
     {
 //        $properties = (object)$this->properties;
-        return new \MongoDate(strtotime($record->record_timestamp));
+	    if($table = $this->scrape($record->fields->permit_id)) {
+		    $record->fields->status = $table[3][2];
+		    return new \MongoDate(strtotime( $table[3][3] ));
+	    } else {
+		    $record->fields->failedFetch = true;
+		    return new \MongoDate(time());
+	    }// Use today's date as they don't provide one
     }
 
-    public function dataset()
-    {
-        return 'Durham Permit Data';
-    }
+	public function id($record){
+		return 'Durham_' . $record->fields->permit_id;
+	}
 
-    public function download($days)
-    {
-        proc_nice(19);
-        ini_set('max_execution_time', 1000);
-        $start = 0;
-        $rows = 100;
-        $new = 0;
-        $updates = 0;
-        $hasgeo = 0;
-        do {
-            $url = 'https://durham.opendatasoft.com/api/records/1.0/search/?dataset=active-building-permits' .
-                '&q=' . urlencode("record_timestamp > #now(days=-$days)") .
-                '&sort=record_timestamp' .
-                '&start=' . $start . '&rows=' . $rows;
-            echo $url . "\n";
-            $data = file_get_contents($url);
-            $data = json_decode($data);
-            $nhits = $data->nhits;
-            $records = $data->records;
-            $start = $start + $rows;
-            $count = 0;
-            foreach ($records as $record) {
-                $count++;
-                $id = 'Durham_' . $record->fields->permit_id;
-                $report = PermitReportD::find()->where(['id' => $id])->one();
-                if ($report === null) {
-                    if (empty($record->fields->p_descript)) {
-                        while (false) ;
-                    }
-                    $report = new PermitReportD();
-                    $report->_id = new \MongoId();
-                    $report->dataset = 'Durham Permit Report';
-                    $report->id = $id;
-                    $report->created_at = new \MongoDate(time());
-                    $report->properties = (object)$record->fields;
-                    $report->datetime = $report->datetime($record);
-                    if (isset($record->geometry)) {
-                        $report->geometry = (object)$record->geometry;
-                    }
-                    $report->other = new \stdClass();
-                    $report->other->datasetid = $record->datasetid;
-                    $report->other->recordid = $record->recordid;
-                    $report->other->record_timestamp = $record->record_timestamp;
-                    $new++;
-                    $report->save();
-                    if (isset($record->geometry->coordinates)) {
-                        $hasgeo++;
-                        if (($message = PermitMessage::find()->where(['id' => $id])->one()) === null) {
-                            $model = new PermitMessage();
-                            $model->buildMessage($report);
-                        } else {
-                            echo 'We should never get here. Message present for new Report' . "\n";
-                        }
-                    }
-                } else {
-                    $updates++;
-                }
-            }
-        } while (count($records) != 0);
+	public function properties($record){
+		return (object)$record->fields;
+	}
 
-        return ['total' => $nhits, 'new' => $new, 'updates' => $updates, 'hasgeo' => $hasgeo, 'days' => $days];
-    }
+	public function geometry($record){
+		return (object)($record->geometry ?? null);
+	}
+
+	public function other($record){
+		$other = new \stdClass();
+		$other->datasetid = $record->datasetid;
+		$other->recordid = $record->recordid;
+		$other->record_timestamp = $record->record_timestamp;
+		return $other;
+	}
+
+	public function getData($days, $start, $rows, &$nhits){
+		$url = 'https://durham.opendatasoft.com/api/records/1.0/search/?dataset=pending-building-permits' .
+		       '&q=' .
+		       '&start=' . $start . '&rows=' . $rows;
+		$data = json_decode(file_get_contents($url));
+		$nhits = $data->nhits;
+		$return = $data->records;
+		$url = 'https://durham.opendatasoft.com/api/records/1.0/search/?dataset=active-building-permits' .
+		       '&q=' .
+		       '&start=' . $start . '&rows=' . $rows;
+		$data = json_decode(file_get_contents($url));
+		$return = array_merge( $return, $data->records );
+		$nhits = $nhits + $data->nhits;
+		return $return;
+	}
+
+	public function scrape($id) {
+		$url = 'http://ldo.durhamnc.gov/durham/ldo_web/ldo_main.aspx';
+		$page   = $this->httpGet( $url, [] );
+
+		$params = $this->analyzeForm($page);
+		if($params === false){
+			return false;
+		}
+
+		$params['fn'] = 'LR_QUERY_DEVAPP2';
+		$params['pgid'] = 'qda2';
+
+		$page   = $this->httpPost( $url, $params );
+
+		$params2 = $this->analyzeForm($page, 2);
+		if($params === false){
+			return false;
+		}
+
+		$params2['PERMIT_NUMBER'] = $id;
+		$params2['fn'] = 'LR_QUERY_DEVAPP_RS2';
+		$params2['SUBMIT'] = 'Submit';
+		$params = array_merge( $params, $params2 );
+		$page = $this->httpPost( $url, $params );
+		if(strpos($page, 'Invalid application number'))return false;
+		$table = $this->parseTable($page, 1);
+		return $table;
+	}
+
+
+
+		private function httpPost($url, $params)
+		{
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_COOKIEJAR, 'CookieJar.txt');
+			curl_setopt($ch, CURLOPT_COOKIEFILE, 'CookieJar.txt');
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_0);
+			$output = curl_exec($ch);
+			curl_close($ch);
+			return $output;
+		}
+
+	private function httpGet($url, $params)
+	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, 'CookieJar.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, 'CookieJar.txt');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_0);
+		$output = curl_exec($ch);
+		curl_close($ch);
+		return $output;
+	}
+
+	private function analyzeForm($page, $req=1000) {
+		$lines = explode( "\n", $page );
+		if(1 >= count($lines)) {
+			return false;
+		}
+		$line  = 0;
+		if(count($lines) <= $line){
+			return false;
+		}
+		while ( !strpos( $lines[ $line ], '<form' ) ) {
+			$line ++;
+		}
+		$params = [ ];
+		$line++;
+		$count = 0;
+		while ( !strpos( $lines[ $line ], '</form') && $count < $req ) {
+			if('' !== trim($lines[$line])) {
+				$parts              = explode( ' ', trim( $lines[ $line ] ) );
+				$keys               = explode( '"', $parts[2] );
+				$vals               = explode( '"', $parts[3] );
+				$params[ $keys[1] ] = $vals[1];
+				$count++;
+			}
+			$line ++;
+		}
+
+		return $params;
+	}
+
+	function parseTable($html, $which)
+	{
+		// Find the table
+		preg_match_all("/<table.*?>.*?<\/[\s]*table>/s", $html, $table_html);
+
+		if(2 > count($table_html[0])){
+			while(false);
+		}
+
+		// Get title for each row
+		/*
+		preg_match_all("/<th.*?>(.*?)<\/[\s]*th>/", $table_html[0], $matches);
+		$row_headers = $matches[1];
+		*/
+
+		// Iterate each row
+		preg_match_all("/<tr.*?>(.*?)<\/[\s]*tr>/s", $table_html[0][$which], $matches);
+
+		$table = [];
+
+		foreach($matches[1] as $row_html)
+		{
+			preg_match_all("/<td.*?>(.*?)<\/[\s]*td>/", str_replace("\r\n", "", $row_html), $td_matches);
+			$row = array();
+			for($i=0; $i<count($td_matches[1]); $i++)
+			{
+				$td = strip_tags(html_entity_decode($td_matches[1][$i]));
+				$row[$i] = trim($td);
+			}
+
+			if(count($row) > 0)
+				$table[] = $row;
+		}
+		return $table;
+	}
+
 }

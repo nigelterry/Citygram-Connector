@@ -47,6 +47,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+	            '/' => 'site/home',
                 'crime-reports/api' => 'crime-message/api',
                 'crime-reports' => 'crime-message/api',
                 'crime_message/map' => 'crime-message/map',

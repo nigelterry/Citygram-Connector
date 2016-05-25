@@ -130,5 +130,5 @@ class PoliceReportD extends PoliceReport
         $nhits = $data->nhits;
         return $data->records;
     }
-    
+
 }

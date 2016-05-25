@@ -66,7 +66,7 @@ class ZoningReportD extends ZoningReport
     public function datetime($record)
     {
 //
-        return new \MongoDate(strtotime($record->record_timestamp));
+        return new \MongoDate(strtotime($record->city_counc));
     }
 
     public function id($record){
@@ -97,8 +97,8 @@ class ZoningReportD extends ZoningReport
 
     public function getData($days, $start, $rows, &$nhits){
         $url = 'https://opendurham.nc.gov/api/records/1.0/search/?dataset=zoning' .
-            '&q=' . urlencode("record_timestamp > #now(days=-$days)") .
-            '&sort=record_timestamp' .
+            '&q=' . urlencode("city_counc > #now(days=-$days)") .
+            '&sort=city_counc' .
             '&start=' . $start . '&rows=' . $rows;
         $data = json_decode(file_get_contents($url));
         $nhits = $data->nhits;

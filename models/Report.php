@@ -51,6 +51,7 @@ abstract class Report extends Base
             'datetime',
             'other',
             'center',
+	        'type'
         ];
     }
 
@@ -181,4 +182,5 @@ abstract class Report extends Base
         }
         return ['total' => 0, 'new' => 0, 'updates' => $updates, 'hasgeo' => $hasgeo, 'days' => 'n/a'];
     }
+	
 }
