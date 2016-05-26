@@ -76,7 +76,6 @@ abstract class Report extends Base
     {
         return array_merge(parent::viewAttributes(), [
             'datetime.sec:datetime',
-            'id',
             'dataset',
             'geometry.coordinates.1',
             'geometry.coordinates.0',
