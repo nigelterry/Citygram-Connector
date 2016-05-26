@@ -42,8 +42,45 @@ class PoliceReportR extends PoliceReport
                 'properties.inc_no' => 'Incident #',
             ]);
     }
+	
+	public function viewAttributes(){
+		return array_merge( [
+			'properties.lcr_desc',
+			'properties.inc_no',
+		], parent::viewAttributes() );
+	}
 
-    public function title($shortUrl)
+	public function indexAttributes(){
+		return [
+			[ 'class' => 'yii\grid\SerialColumn' ],
+			[ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Incident Date / Time' ],
+			'id',
+//			'type',
+			'dataset',
+			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
+			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
+			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
+			[
+				'class'    => 'yii\grid\ActionColumn',
+				'template' => '{view} {dump} {map} {item} {update} {delete}',
+				'buttons'  => [
+					'map'  => function ( $url, $model, $key ) {
+						return ( isset( $model->geometry['coordinates'][0] ) &&
+						         $model->config->hasMap ) ? Html::a( 'Map', $url ) : '';
+					},
+					'dump' => function ( $url, $model, $key ) {
+						return Html::a( 'Dump', $url );
+					},
+					/*					'item' => function ( $url, $model, $key ) {
+											return Html::a( 'Item', [$model->source_type .'/item', 'id' => (string)$model->source_id] );
+										},*/
+				],
+			],
+		];
+	}
+
+
+	public function title($shortUrl)
     {
         $properties = (object)$this->properties;
         return 'Crime incident HERE->' . $shortUrl . ' ' .
