@@ -201,8 +201,8 @@ class PermitReportD extends PermitReport
 		{
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_COOKIEJAR, 'CookieJar.txt');
-			curl_setopt($ch, CURLOPT_COOKIEFILE, 'CookieJar.txt');
+			curl_setopt($ch, CURLOPT_COOKIEJAR, '/CookieJar.txt');
+			curl_setopt($ch, CURLOPT_COOKIEFILE, '/CookieJar.txt');
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HEADER, false);
@@ -219,8 +219,8 @@ class PermitReportD extends PermitReport
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, 'CookieJar.txt');
-		curl_setopt($ch, CURLOPT_COOKIEFILE, 'CookieJar.txt');
+		curl_setopt($ch, CURLOPT_COOKIEJAR, '/CookieJar.txt');
+		curl_setopt($ch, CURLOPT_COOKIEFILE, '/CookieJar.txt');
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, false);
