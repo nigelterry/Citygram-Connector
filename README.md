@@ -90,3 +90,51 @@ return [
 **NOTE:** Yii won't create the database for you, this has to be done manually before you can access it.
 
 Also check and edit the other files in the `config/` directory to customize your application.
+
+Adding Datasources
+==================
+
+To add a new dataset, you can use existing files...copy/rename them. For
+example, lets add the 'Crash Data' for Cary.
+
+https://data.townofcary.org/explore/dataset/cpd-crash-incidents/api/?disjunctive.rdfeature&disjunctive.rdcharacter&disjunctive.rdclass&disjunctive.rdconfigur&disjunctive.rdsurface&disjunctive.rdcondition&disjunctive.lightcond&disjunctive.weather&disjunctive.trafcontrl&disjunctive.month&disjunctive.contributing_factor&disjunctive.vehicle_type&location=10,35.79992,-78.64599
+
+First make a new Crash Report TYPE. Copy `models/PoliceReport.php` to `models/CrashReport.php`.
+Change the class name appropriately (CrashReport).
+
+Then we setup the report for the Cary data source. Copy `models/PoliceReportC.php` to `models/CrashReportC.php`
+Change class names. Change all instances of ‘police’ to ‘crash’. This shows the report for the Cary data.
+
+Next we need to populate all the methods in the parent `models/Report.php` class.
+
+ * getData(): This pulls the URL where the data comes from. In this case its at the bottom of the code for Cary API tab. Also, you probably need to filter on date. Find the appropriate datetime column to do that. Get the ‘number of hits’ column from the JSON response...the data we get back should be sorted by crash date too.
+ * datatime() - crash_date in this case.
+ * id() - a unique id. We’ll use tamainid.
+ * properties() - are all the fields. Same as the source.
+ * geometry() - find the geometry. Again it was the same as the police data.
+ * other() - all the other records.
+ * title() - what are we going to say to the humans: summarizing the date. Here we went with vehicle1 and vehicle2 as our summary.
+ * popupContent() - same idea.
+
+Copy `models/CrimeMessage.php` to `models/CrashMessageSearch.php`.
+Change class names. Change ‘police’ to ‘crash’ within the file. This is responsible for the message that is exported to the citygram geojson feed.
+
+Copy `models/CrimeMessageSearch.php` to `models/CrashMessageSearch.php`
+Change class names. It would be used for the citygram-connector filtering (but we don’t do much with that now).
+
+Copy `models/CrimeReportCSearch.php` to `models/CrashReportCSearch.php`
+Change class names.
+
+Copy `controllers/PoliceReportController.php` to `controllers/CrashReportController.php`
+Change class names. Rename names appropriately.
+
+Copy `controllers/CrimeMessageController.php` to `controllers/CrashMessageController.php`
+Change class names. Rename names appropriately.
+
+Copy `controllers/PoliceReportCController.php` to `controllers/CrashReportCController.php`
+Change class names. Rename names appropriately.
+
+Finally, load the data into the database:
+
+    # last 365 days
+    ./yii.sh load CrashReport 365
