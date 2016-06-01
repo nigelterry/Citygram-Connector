@@ -3,7 +3,7 @@ Publisher.create! do |pub|
   pub.endpoint = "http://citygram.codeforcary.org/crime-reports"
   pub.active = true
   pub.visible = false
-  pub.city = "Triangle NC"
+  pub.city = "Research Triangle, NC"
   pub.icon = "police-incidents.png"
   pub.state = "NC"
   pub.description = "Crime Reports from local Police Departments"

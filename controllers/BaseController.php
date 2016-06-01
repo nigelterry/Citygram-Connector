@@ -167,7 +167,7 @@ class BaseController extends Controller {
 	 * Lists all PoliceReport models.
 	 * @return mixed
 	 */
-	public function actionRelated( $page = 0, $limit = 10000, $offset = 0, $days = 90, $pretty = false ) {
+	public function actionRelated( $page = 0, $limit = 10000, $offset = 0, $days = 120, $pretty = false ) {
 		/*        file_get_contents('http://webstats.sapphirewebservices.com/piwik.php?idsite=18&rec=1&url=' .
 					urlencode('http://' . $_SERVER['HTTP_HOST'] .  $_SERVER['REQUEST_URI']) .
 					'&_cvar=' . urlencode('{"1":["ip","' . $_SERVER['REMOTE_ADDR'] . '"]}'));*/
