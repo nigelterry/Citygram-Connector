@@ -38,6 +38,27 @@ The minimum requirement by this project template that your Web server supports P
 INSTALLATION
 ------------
 
+### Developer Setup in Vagrant
+
+You can get the app up and running quickly with
+[Vagrant](http://vagrantup.com). Do:
+
+    # setup a box with php and composer.
+    vagrant up
+
+    # login...
+    vagrant ssh
+
+    # go to the hosted directory
+    cd /vagrant
+
+    # start up the test server (run on global port for vagrant to pick it up)
+    ./yii serve 0.0.0.0
+
+Now you can go to [localhost:8080](http://localhost:8080) to see the site.
+
+You can login with user: admin, and password: admin
+
 ### Install from an Archive File
 
 Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
