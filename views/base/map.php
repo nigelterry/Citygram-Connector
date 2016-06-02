@@ -91,7 +91,7 @@ $leaflet->addLayer($marker)// add the marker (addLayer is used to add different 
 
 $leaflet->appendJs('var id = "' . $model->id . '";');
 $function = new \ReflectionClass($model);
-$leaflet->appendJs('var searchModel = "' . $function->getShortName() . 'Search";');
+$leaflet->appendJs('var searchModel = "' . $function->getShortName() . '";');
 
 $leaflet->appendJs(isset(Yii::$app->request->queryParams['query_limit']) ?
     'var query_limit = ' . Yii::$app->request->queryParams['query_limit'] :

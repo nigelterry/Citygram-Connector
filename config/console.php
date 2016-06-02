@@ -31,7 +31,7 @@ return [
             'dsn' => 'mongodb://localhost:27017/citygram',
         ],
         'urlManager' => [
-            'baseUrl' => 'http://citygram.codeforcary.org/',
+            'baseUrl' => $params['mapUrl'],
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ]

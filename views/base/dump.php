@@ -8,8 +8,8 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel app\models\CrimeMessageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$title = $model->config->title;
-$this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => ['index']];
+$title = $model->pageTitle;
+$this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => [$model->urlName . '/' . 'index']];
 
 ?>
 <div class="model-index">
@@ -19,18 +19,18 @@ $this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => ['index']];
     <p>
 
         <?php
-        if($model->config->hasMap) {
-            echo Html::a('Map', ['map', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']) . '&nbsp';
+        if($model->hasMap) {
+            echo Html::a('Map', [$model->urlName . '/' . 'map', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']) . '&nbsp';
         }
-        echo Html::a('View', ['view', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']) . '&nbsp';
-        echo Html::a('Item', ['item', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
+        echo Html::a('View', [$model->urlName . '/' . 'view', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']) . '&nbsp';
+        echo Html::a('Item', [$model->urlName . '/' . 'item', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
         if(!empty($model->source_type)) {
             $s = $model->source_type;
             $m = new $s;
-            $n = $m->config->urlName;
+            $n = $m->urlName;
             echo '&nbsp' . Html::a('Source', [$n . '/dump', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
         } else {
-            $n = $model->config->messageUrl;
+            $n = $model->messageUrl;
             echo '&nbsp' . Html::a('Message', [$n . '/dump', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
             echo '&nbsp' . Html::a('Map', [$n . '/map', 'id' => (string)$model->_id], ['class' => 'btn btn-primary']);
         }
