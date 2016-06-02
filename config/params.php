@@ -2,7 +2,11 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'map_url' => 'http://citygram/',
+    'mapUrl' => 'http://citygram/',
     'mapProvider' => 'Streetmap',
-//    'mapProvider' => 'HERE'
+//    'mapProvider' => 'HERE',
+	'urlShortenerUrl' => 'http://trg.pw/yourls-api.php',
+	'urlShortenerKey' => '8e4295eaef', //trg.pw
+//	'urlShortenerKey' => 'AIzaSyCqPfw5wHMOrxyYkRE7cOBu6lxVeG1hoYE', //Google
+	'useGoogle' => false
 ];

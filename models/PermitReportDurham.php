@@ -10,82 +10,57 @@ use \yii\helpers\Html;
  *
  * @property \MongoId|string $_id
  */
-class PermitReportD extends PermitReport
+class PermitReportDurham extends BaseReport
 {
 
-    private $count = 0;
+	use ReportTrait;
+
+	private $count = 0;
+
+	public function modelConstruct()
+	{
+		$this->pageTitle = 'Durham Permit Report';
+		$this->messageType = 'PermitMessage';
+		$this->datasetName = 'Durham Permit Report';
+	}
 
     /**
      * @inheritdoc
      */
-    public static function collectionName()
+    public function modelAttributeLabels()
     {
-        return ['citygram', 'permit_report_durham'];
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'permit-report-d';
-        $this->config->dataset = 'Durham Permit Application';
-        $this->config->title = 'Durham Permit Application';
-
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(), [
+        return [
             '_id' => 'ID',
 	        'id' => 'Permit Id',
             'dataset' => 'Data Set',
             "properties.datasetid" => 'Dataset ID',
 	        'properties.siteadd' => 'Site Addr',
 	        'properties.p_descript' => 'Legal Description'
-        ]);
+        ];
     }
 
-	public function viewAttributes()
+	public function modelViewAttributes()
 	{
-		return array_merge( [
-			'properties.siteadd',
-			'properties.p_descript',
-			'properties.status'
-		], parent::viewAttributes());
+		return [
+			'properties.siteadd' => '',
+			'properties.p_descript' => '',
+			'properties.status' => ''
+		];
 	}
 
-	public function indexAttributes(){
+	public function modelIndexAttributes(){
 		return [
 			[ 'class' => 'yii\grid\SerialColumn' ],
 			[ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Incident Date / Time' ],
 			'id',
-//			'type',
 			'dataset',
 			'properties.title',
-//            'short_url',
 			'properties.status',
 			'properties.failedFetch',
 			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
 			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
 			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
-			[
-				'class'    => 'yii\grid\ActionColumn',
-				'template' => '{view} {dump} {map} {item} {update} {delete}',
-				'buttons'  => [
-					'map'  => function ( $url, $model, $key ) {
-						return ( isset( $model->geometry['coordinates'][0] ) &&
-						         $model->config->hasMap ) ? Html::a( 'Map', $url ) : '';
-					},
-					'dump' => function ( $url, $model, $key ) {
-						return Html::a( 'Dump', $url );
-					},
-					/*					'item' => function ( $url, $model, $key ) {
-											return Html::a( 'Item', [$model->source_type .'/item', 'id' => (string)$model->source_id] );
-										},*/
-				],
-			],
+			$this->actionColumn(),
 		];
 	}
 
@@ -122,6 +97,9 @@ class PermitReportD extends PermitReport
     {
 //        $properties = (object)$this->properties;
 	    if($table = $this->scrape($record->fields->permit_id)) {
+		    if($table === false) {
+			    return false;
+		    }
 		    $record->fields->status = $table[3][2];
 		    return new \MongoDate(strtotime( $table[3][3] ));
 	    } else {
@@ -266,16 +244,9 @@ class PermitReportD extends PermitReport
 		preg_match_all("/<table.*?>.*?<\/[\s]*table>/s", $html, $table_html);
 
 		if(2 > count($table_html[0])){
-			while(false);
+			return false;;
 		}
 
-		// Get title for each row
-		/*
-		preg_match_all("/<th.*?>(.*?)<\/[\s]*th>/", $table_html[0], $matches);
-		$row_headers = $matches[1];
-		*/
-
-		// Iterate each row
 		preg_match_all("/<tr.*?>(.*?)<\/[\s]*tr>/s", $table_html[0][$which], $matches);
 
 		$table = [];

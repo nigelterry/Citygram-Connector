@@ -4,78 +4,78 @@ namespace app\models;
 
 use Yii;
 use \yii\helpers\Html;
+use yii\mongodb\ActiveRecord;
+use yii\helpers\Url;
 
 /**
  * This is the model class for collection "police_report".
  *
  * @property \MongoId|string $_id
  */
-class PoliceReportR extends PoliceReport
+class PoliceReportRaleigh extends BaseReport
 {
-    /**
-     * @inheritdoc
-     */
-    public static function collectionName()
+
+	use ReportTrait;
+
+    public function modelConstruct()
     {
-        return ['citygram', 'police_report_raleigh'];
+	    $this->messageUrl = 'crime-message';
+	    $this->pageTitle = 'Raleigh Police Report';
+		$this->messageType = 'CrimeMessage';
+	    $this->datasetName = 'Raleigh Police Report';
     }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'police-report-r';
-        $this->config->dataset = 'Police Report Raleigh';
-        $this->config->title = 'Raleigh Police Report';
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function modelAttributes()
+	{
+		return
+			[
+				'properties.inc_datetime',
+				'properties.lcr_desc',
+				'properties.district',
+				'properties.lcr',
+				'properties.inc_no',
+			];
+	}
 
         /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function modelAttributeLabels()
     {
-        return array_merge(parent::attributeLabels(),
+        return 
             [
                 'properties.inc_datetime' => 'Date / Time',
                 'properties.lcr_desc' => 'Description',
                 'properties.district' => 'District',
                 'properties.lcr' => 'LCR',
                 'properties.inc_no' => 'Incident #',
-            ]);
+            ];
     }
 	
-	public function viewAttributes(){
-		return array_merge( [
-			'properties.lcr_desc',
-			'properties.inc_no',
-		], parent::viewAttributes() );
+	public function modelViewAttributes(){
+		return [
+			'properties.lcr_desc' => '',
+			'properties.inc_no' => '',
+			'datetime.sec' => ':datetime',
+			'dataset' => '',
+			'geometry.coordinates.1' => '',
+			'geometry.coordinates.0' => '',
+		];
 	}
 
-	public function indexAttributes(){
+	public function modelIndexAttributes(){
 		return [
 			[ 'class' => 'yii\grid\SerialColumn' ],
 			[ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Incident Date / Time' ],
 			'id',
-//			'type',
 			'dataset',
 			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
 			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
 			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
-			[
-				'class'    => 'yii\grid\ActionColumn',
-				'template' => '{view} {dump} {map} {item} {update} {delete}',
-				'buttons'  => [
-					'map'  => function ( $url, $model, $key ) {
-						return ( isset( $model->geometry['coordinates'][0] ) &&
-						         $model->config->hasMap ) ? Html::a( 'Map', $url ) : '';
-					},
-					'dump' => function ( $url, $model, $key ) {
-						return Html::a( 'Dump', $url );
-					},
-					/*					'item' => function ( $url, $model, $key ) {
-											return Html::a( 'Item', [$model->source_type .'/item', 'id' => (string)$model->source_id] );
-										},*/
-				],
-			],
+			$this->actionColumn(),
 		];
 	}
 

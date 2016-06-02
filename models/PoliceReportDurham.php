@@ -4,36 +4,32 @@ namespace app\models;
 
 use Yii;
 use \yii\helpers\Html;
+use yii\mongodb\ActiveRecord;
 
 /**
  * This is the model class for collection "police_report".
  *
  * @property \MongoId|string $_id
  */
-class PoliceReportD extends PoliceReport
+class PoliceReportDurham extends BaseReport
 {
-    /**
-     * @inheritdoc
-     */
-    public static function collectionName()
-    {
-        return ['citygram', 'police_report_durham'];
-    }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'police-report-d';
-        $this->config->dataset = 'Police Report Durham';
-        $this->config->title = 'Durham Police Report';
-    }
+	use ReportTrait;
+
+	public function modelConstruct()
+	{
+		$this->messageUrl = 'crime-message';
+		$this->pageTitle = 'Durham Police Report';
+		$this->messageType = 'CrimeMessage';		
+		$this->datasetName = 'Durham Police Report';
+	}
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function modelAttributeLabels()
     {
-        return array_merge(parent::attributeLabels(),[
+        return [
             'dataset' => 'Source',
             'properties.inci_id' => 'Durham Police ID #',
             'properties.reportedas' => 'Reported as',
@@ -43,23 +39,23 @@ class PoliceReportD extends PoliceReport
             'geometry.coordinates.1' =>'Latitude',
             'geometry.coordinates.0' => 'Longitude',
             'properties.big_zone' => 'Police Zone',
-        ]);
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function viewAttributes(){
-        return array_merge(parent::viewAttributes(),[
-            'dataset',
-            'properties.inci_id',
-            'properties.reportedas',
-            'properties.chrgdesc',
-            'datetime.sec:datetime',
-            'geometry.coordinates.1',
-            'geometry.coordinates.0',
+    public function modelViewAttributes(){
+        return [
+            'dataset' => '',
+            'properties.inci_id' => '',
+            'properties.reportedas' => '',
+            'properties.chrgdesc' => '',
+            'datetime.sec' => ':datetime',
+            'geometry.coordinates.1' => '',
+            'geometry.coordinates.0' => '',
             'properties.big_zone',
-        ]);
+        ];
     }
 
     /**

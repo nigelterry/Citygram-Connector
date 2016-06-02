@@ -3,52 +3,43 @@
 namespace app\models;
 
 use Yii;
+use yii\mongodb\ActiveRecord;
 
 /**
  * This is the model class for collection "message".
  *
  * @property \MongoId|string $_id
  */
-class ZoningMessage extends Message
+class ZoningMessage extends BaseMessage
 {
-    public function titleString(){
-        return 'Rezoning Applications Applications';
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public static function collectionName()
-    {
-        return ['citygram', 'zoning_message'];
-    }
+	use MessageTrait;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'zoning-message';
-        $this->config->title = 'Rezoning Application';
-    }
+	public function modelConstruct()
+	{
+		$this->pageTitle = 'Rezoning Message';
+	}
 
-    public function viewAttributes()
+    public function modelViewAttributes()
     {
-        return array_merge(parent::viewAttributes(), [
-            'id',
-            'type',
-            'dataset',
-            'dataset',
-            'short_url:url',
-            'properties.title',
-            'properties.popupContent',
-        ]);
+        return [
+            'id' => '',
+            'type' => '',
+            'dataset' => '',
+	        'datetime.sec' => ':date',
+	        'center.coordinates.1' => '',
+	        'center.coordinates.0' => '',
+            'short_url' => ':url',
+            'properties.title' => '',
+            'properties.popupContent' => '',
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function modelAttributeLabels()
     {
-        return array_merge(parent::attributeLabels(),[
+        return [
             '_id' => 'MongoID',
             'id' => 'Unique ID',
             'datetime' => 'Date / Time',
@@ -59,7 +50,9 @@ class ZoningMessage extends Message
             'geometry.coordinates.1' => 'lat',
             'dataset' => 'Original Dataset',
             'short_url' => 'Url',
-        ]);
+            'center.coordinates.1' => 'Center long',
+            'center.coordinates.0' => 'Center lat',
+        ];
     }
 
 }

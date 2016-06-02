@@ -10,30 +10,34 @@ use \yii\helpers\Html;
  *
  * @property \MongoId|string $_id
  */
-class CrashReportC extends CrashReport
+class PoliceReportCary extends BaseReport
 {
+
+	use ReportTrait;
+
+	public function modelConstruct()
+	{
+		$this->messageUrl = 'crime-message';
+		$this->pageTitle = 'Cary Police Report';
+		$this->messageType = 'CrimeMessage';
+		$this->datasetName = 'Cary Police Report';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function modelAttributes() {
+		return [
+
+		];
+	}
+
     /**
      * @inheritdoc
      */
-    public static function collectionName()
+    public function modelAttributeLabels()
     {
-        return ['citygram', 'crash_report_cary'];
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'crash-report-c';
-        $this->config->dataset = 'Crash Report Cary';
-        $this->config->title = 'Cary Crash Report';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return array_merge(parent::attributeLabels(),[
+        return [
             'dataset' => 'Source',
             'properties.id' => 'Cary Police ID #',
             'properties.crime_category' => 'Crime Category',
@@ -46,55 +50,62 @@ class CrashReportC extends CrashReport
             'properties.lat' =>'Latitude',
             'properties.lon' => 'Longitude',
             'properties.residential_subdivision' => 'Subdivision',
-        ]);
+        ];
     }
 
-    public function viewAttributes(){
-        return array_merge(parent::viewAttributes(),[
-            'dataset',
-            'properties.id',
-            'properties.crime_category',
-            'properties.crime_type',
-            'properties.crimeday',
-            'properties.date_from:date',
-            'properties.from_time:time',
-            'properties.date_to:date',
-            'properties.to_time:time',
-            'properties.lat',
-            'properties.lon',
-            'properties.residential_subdivision',
-        ]);
+    public function modelViewAttributes(){
+        return [
+            'dataset' => '',
+            'properties.id' => '',
+            'properties.crime_category' => '',
+            'properties.crime_type' => '',
+            'properties.crimeday' => '',
+            'properties.date_from' => ':date',
+            'properties.from_time' => ':time',
+            'properties.date_to' => ':date',
+            'properties.to_time' => ':time',
+            'properties.lat' => '',
+            'properties.lon' => '',
+            'properties.residential_subdivision' => '',
+        ];
     }
 
     public function title($shortUrl)
     {
         $properties = (object)$this->properties;
-        return 'Crash HERE->' . $shortUrl . ' ' .
+        return 'Crime incident HERE->' . $shortUrl . ' ' .
         date('D M j \a\t g:ia',
             $this->datetime->sec) .
-        ' between a ' .  ' and ' ;
+        '. Cary Police described as ' .
+        (isset($properties->crime_category) ?
+            (ucwords(strtolower($properties->crime_category)) . ' ')
+            : 
+            '') . ucwords(strtolower($properties->crime_type));
     }
 
     public function popupContent()
     {
         $properties = (object)$this->properties;
         return Html::tag('div',
-            'Crash incident #' . $properties->tamainid .
+            'Crime incident #' . $properties->incident_number .
         date(' D M j \a\t g:ia',
             $this->datetime->sec) .
         '. Cary Police described as ' .
-        ' between a ' . ' and ' , ['class' => 'popup-body']) .
+        (isset($properties->crime_category) ?
+            (ucwords(strtolower($properties->crime_category)) . ' ') :
+            '') .
+            ucwords(strtolower($properties->crime_type)), ['class' => 'popup-body']) .
                 $this->linkBlock();
     }
 
     public function datetime($record)
     {
         $properties = $record->fields;
-        return new \MongoDate(strtotime($properties->crash_date));
+        return new \MongoDate(strtotime($properties->date_to));
     }
 
     public function id($record){
-        return 'Cary_' . $record->fields->tamainid;
+        return 'Cary_' . $record->fields->id;
     }
 
     public function properties($record){
@@ -114,9 +125,9 @@ class CrashReportC extends CrashReport
     }
 
     public function getData($days, $start, $rows, &$nhits){
-        $url = 'https://data.townofcary.org/api/records/1.0/search/?dataset=cpd-crash-incidents' .
-            '&q=' . urlencode("crash_date > #now(days=-$days)") .
-            '&sort=crash_date' .
+        $url = 'https://data.townofcary.org/api/records/1.0/search/?dataset=cpd-incidents' .
+            '&q=' . urlencode("date_from > #now(days=-$days)") .
+            '&sort=date_from' .
             '&start=' . $start . '&rows=' . $rows;
         $data = json_decode(file_get_contents($url));
         $nhits = $data->nhits;

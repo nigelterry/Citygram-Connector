@@ -10,31 +10,25 @@ use \yii\helpers\Html;
  *
  * @property \MongoId|string $_id
  */
-class PermitReportC extends PermitReport
+class PermitReportCary extends BaseReport
 {
-    private $count = 0;
-    
-    /**
-     * @inheritdoc
-     */
-    public static function collectionName()
-    {
-        return ['citygram', 'permit_report_cary'];
-    }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'permit-report-c';
-        $this->config->dataset = 'Cary Permit Application';
-        $this->config->title = 'Cary Permit Application';
+	use ReportTrait;
 
-    }
+	private $count = 0;
+
+	public function modelConstruct()
+	{
+		$this->messageUrl = 'permit-message';
+		$this->pageTitle = 'Cary Permit Report';
+		$this->messageType = 'PermitMessage';
+		$this->datasetName = 'Cary Permit Report';
+	}
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function modelAttributeLabels()
     {
         return array_merge(parent::attributeLabels(),[
             '_id' => 'ID',

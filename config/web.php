@@ -6,7 +6,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log', 'devicedetect'],
-    'defaultRoute' => 'base',
+    'defaultRoute' => 'site/home',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -48,13 +48,9 @@ $config = [
             'showScriptName' => false,
             'rules' => [
 	            '/' => 'site/home',
-                'crime-reports/api' => 'crime-message/api',
-                'crime-reports' => 'crime-message/api',
-                'crime_message/map' => 'crime-message/map',
-                'crime_message/crimes' => 'crime-message/crimes',
-//                '/' => 'message/api',
-//                '/download.html' => 'message/api',
-//                '/download.geojson' => 'message/api'
+	            'site/<action:\w+>' => 'site/<action>',
+	            '<controller:[\w-]+>/<action:[\w-]+>' => 'base/route',
+	            '<controller:[\w-]+>' => 'base/route'
             ],
         ],
         'devicedetect' => [

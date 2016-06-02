@@ -3,14 +3,20 @@
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
+use yii\base\InvalidConfigException;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+use yii\helpers\Url;
+use yii\helpers\Html;
 
 /**
  * CrimeMessageSearch represents the model behind the search form about `app\models\CrimeMessage`.
  */
-Trait SearchTrait
+Trait ModelTrait
 {
+	protected $useGoogle = false;
+
     public $days;
     public $query_select = [];
     public $query_limit = 0;
@@ -23,25 +29,105 @@ Trait SearchTrait
 
     public $ignore;
 
+	public $urlName;
+	public $modelName;
+	public $hasMap;
+	public $className;
+	public $shortName;
+	public $messageUrl;
+	public $pageTitle;
+
+	public function __construct()
+	{
+		parent::__construct();
+		$r = new \ReflectionClass($this);
+		$this->className = $r->getName();
+		$this->shortName = $r->getShortName();
+		$this->modelName = StringHelper::basename(get_class($this));
+		$this->urlName = Inflector::camel2id(StringHelper::basename(get_class($this)));
+		$this->hasMap = false;
+		$this->construct();
+		if ( method_exists( $this, 'modelConstruct' ) ) {
+			$this->modelConstruct();
+		}
+		if(isset($this->messageType)){
+			$this->messageUrl = Inflector::camel2id($this->messageType);
+		}
+		$this->checkExists($this->requiredProperties);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function collectionName()
+	{
+		return ['citygram', Inflector::camel2id(StringHelper::basename(get_called_class()), '_')];
+	}
+
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function baseRules()
     {
         return [
             [['_id', 'type', 'properties', 'dataset', 'geometry', 'created_at', 'dataset', 'query_select', 'query_limit',
-                'ignore', 'ne_lat', 'ne_long', 'sw_lat', 'sw_long', 'short_url'], 'safe'],
+                'ignore', 'ne_lat', 'ne_long', 'sw_lat', 'sw_long'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
+	/*     public function scenarios()
+		{
+			// bypass scenarios() implementation in the parent class
+			return Model::scenarios();
+		}*/
+
+	/**
+	 * @inheritdoc
+	 */
+	public function baseAttributes()
+	{
+		return [
+			'created_at',
+			'updated_at'
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function baseAttributeLabels()
+	{
+		return [
+			'_id' => 'MongoID',
+			'created_at' => 'Created At',
+			'updated_at' => 'Updated At',
+			'geometry.coordinates.0' => 'Longitude',
+			'geometry.coordinates.1' => 'Latitude',
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function baseViewAttributes()
+	{
+		return [
+
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function baseIndexAttributes()
+	{
+		return [
+
+		];
+	}
 
     /**
      * Creates data provider instance with search query applied
@@ -52,12 +138,12 @@ Trait SearchTrait
      */
     public function search($params)
     {
-        $m = $this->config->className; // Just keep PHPStorm happy
+        $m = $this->className; // Just keep PHPStorm happy
         $query = $m::find();
         $query->orderBy('datetime DESC');
         $query->select($this->query_select);
-        if (isset($params[$this->config->className]) && isset($params[$this->config->className]['query_limit']) && $params[$this->config->className]['query_limit'] == null) {
-            unset($params[$this->config->className]['query_limit']);
+        if (isset($params[$this->className]) && isset($params[$this->className]['query_limit']) && $params[$this->className]['query_limit'] == null) {
+            unset($params[$this->className]['query_limit']);
         }
         $query->limit($this->query_limit);
         $query->offset($this->query_offset);
@@ -117,4 +203,39 @@ Trait SearchTrait
 
         return $dataProvider;
     }
+
+	public function actionColumn(){
+		return [
+			'class'    => 'yii\grid\ActionColumn',
+			'template' => '{view} {dump} {map} {item}',
+			'urlCreator' => function($action, $model, $key, $index){
+				return Url::to([$model->urlName . '/' . $action, 'id' => $key->{'$id'}]);
+			},
+			'buttons'  => [
+				'map'  => function ( $url, $model, $key ) {
+					return ( isset( $model->geometry['coordinates'][0] ) &&
+					         $model->hasMap ) ? Html::a( 'Map', $url ) : '';
+				},
+				'dump' => function ( $url, $model, $key ) {
+					return Html::a( 'Dump', $url );
+				},
+				'item' => function ( $url, $model, $key ) {
+					return Html::a( 'Item', $url );
+				},
+				'view' => function ( $url, $model, $key ) {
+					return Html::a( 'View', $url );
+				},
+			],
+		];
+	}
+
+	protected function checkExists($properties){
+		foreach ($properties as $property){
+			$prop = $this->{$property};
+			if(!isset($prop) || $prop === null || $prop === ''){
+				throw new InvalidConfigException('$' . $property . ' must be configured in ' . $this->className);
+			}
+		}
+	}
+
 }

@@ -3,57 +3,48 @@
 namespace app\models;
 
 use Yii;
+use \yii\mongodb\ActiveRecord;
 
 /**
  * This is the model class for collection "message".
  *
  * @property \MongoId|string $_id
  */
-class PermitMessage extends Message
+class PermitMessage extends BaseMessage
 {
-    public function titleString(){
-        return 'Permit Applications';
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public static function collectionName()
-    {
-        return ['citygram', 'permit_message'];
-    }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->config->urlName = 'permit-message';
-        $this->config->title = 'Permit Application';
-    }
+	use MessageTrait;
+
+	public function modelConstruct()
+	{
+		$this->pageTitle = 'Permit Message';
+	}
 
     /**
      * @inheritdoc
      */
-    public function viewAttributes()
+    public function modelViewAttributes()
     {
-        return array_merge(parent::viewAttributes(), [
-            'id',
-            'type',
-            'dataset',
-            'geometry.coordinates.0',
-            'geometry.coordinates.1',
-            'dataset',
-            'short_url:url',
-            'properties.title',
-            'properties.popupContent',
-        ]);
+        return [
+            'id' => '',
+            'type' => '',
+            'dataset' => '',
+            'geometry.coordinates.0' => '',
+            'geometry.coordinates.1' => '',
+            'dataset' => '',
+            'short_url' => ':url',
+	        'long_url' => ':url',
+            'properties.title' => '',
+            'properties.popupContent' => '',
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function modelAttributeLabels()
     {
-        return array_merge(parent::attributeLabels(),[
+        return [
             '_id' => 'MongoID',
             'id' => 'Unique ID',
             'datetime' => 'Date / Time',
@@ -63,8 +54,7 @@ class PermitMessage extends Message
             'geometry.coordinates.0' => 'lng',
             'geometry.coordinates.1' => 'lat',
             'dataset' => 'Original Dataset',
-            'short_url' => 'Url',
-        ]);
+        ];
     }
 
 }
