@@ -134,7 +134,7 @@ Adding Datasources
 
 To add a new dataset, you can use existing files...copy/rename them. The files you need to generate will go in /models/. 
 
-For example, lets add the 'Crash Data' for Cary. We will create models/CrashReportCary.php & models/CrimeMessage.php. The easiest way to start is to copy the Cary files PoliceReportCary & CrimeReports. They should be heavily commented by the time you read this.
+For example, lets add the 'Crash Data' for Cary. We will create models/CrashReportCary.php & models/CrimeMessage.php. The easiest way to start is to copy the Cary files PoliceReportCary & CrimeReports. They are the best commented of the models.
 
 The full url for the Town of Cary endpoint is 
 https://data.townofcary.org/explore/dataset/cpd-crash-incidents/api/?disjunctive.rdfeature&disjunctive.rdcharacter&disjunctive.rdclass&disjunctive.rdconfigur&disjunctive.rdsurface&disjunctive.rdcondition&disjunctive.lightcond&disjunctive.weather&disjunctive.trafcontrl&disjunctive.month&disjunctive.contributing_factor&disjunctive.vehicle_type&location=10,35.79992,-78.64599
@@ -160,3 +160,5 @@ From the root directory run:
 
     # last 365 days
     ./yii.sh load CrashReportCary 365
+    
+Note: If you can't get the data you need directly from an api endpoint, you may need to scrape it. Take a look at PermitReportDurham. This model retrieves some information from an api, but needs to scrape further data to get the date.
