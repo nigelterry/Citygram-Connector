@@ -20,7 +20,6 @@ class CrashReportCary extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'crash-message';
 		$this->pageTitle = 'Cary Crash Report';
 		$this->datasetName = 'Cary Crash Report';
 		$this->messageType = 'CrashMessage';

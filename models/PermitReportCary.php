@@ -19,7 +19,6 @@ class PermitReportCary extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'permit-message';
 		$this->pageTitle = 'Cary Permit Report';
 		$this->messageType = 'PermitMessage';
 		$this->datasetName = 'Cary Permit Report';

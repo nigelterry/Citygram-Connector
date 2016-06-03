@@ -18,7 +18,6 @@ class ZoningReportDurham extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'zoning-message';
 		$this->pageTitle = 'Durham Re-zoning Report';
 		$this->messageType = 'ZoningMessage';
 		$this->datasetName = 'Durham Zoning Report';

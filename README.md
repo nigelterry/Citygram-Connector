@@ -112,21 +112,36 @@ return [
 
 Also check and edit the other files in the `config/` directory to customize your application.
 
+Basic App Structure and Data Flow
+=================================
+
+This connector sits between one or more sources of data, and gets records from the source through an api or by scraping information. These records are considered REPORTS and there will be a data model and mongodb collection associated with that Report. As an example if the data source was Police Records from Cary, The model would best be called PoliceReportCary. The app will create a collection named police_report_cary and will provide a set of end points like:
+http://domain/police-report-cary/api
+http://domain/police-report-cary/index
+http://domain/police-report-cary/view
+http://domain/police-report-cary/dump
+http://domain/police-report-cary/item
+Explore these later.
+
+As the REPORT information is retrieved it is processed and will be added to a data model that is a MESSAGE. For each type of message there will be one MESSAGE. In this case since the messages are about crime, we will call the model CrimeMessage and the mongodb collection will be crime_message. Similar end points to the above are available at http://domain/crime-message. The most important of these is http://domain/crime-message/api which is the endpoint that should be called from the main http://Citygram.org instance. This is also the deafult action, so http://domain/crime-message will suffice. If you want a human readable version try http://domain/crime-message?pretty=true.
+
+Note that to view the index, view and dump pages, you will need to login to the app. Use user = demo, password = demo.
+
+Also note that if the retrieved REPORT data does not contain geographical location information, no MESSAGE will be built as http://Citygram.org doesn't handle messages without a location.
+
 Adding Datasources
 ==================
 
-To add a new dataset, you can use existing files...copy/rename them. For
-example, lets add the 'Crash Data' for Cary.
+To add a new dataset, you can use existing files...copy/rename them. The files you need to generate will go in /models/. 
 
+For example, lets add the 'Crash Data' for Cary. We will create models/CrashReportCary.php & models/CrimeMessage.php. The easiest way to start is to copy the Cary files PoliceReportCary & CrimeReports. They should be heavily commented by the time you read this.
+
+The full url for the Town of Cary endpoint is 
 https://data.townofcary.org/explore/dataset/cpd-crash-incidents/api/?disjunctive.rdfeature&disjunctive.rdcharacter&disjunctive.rdclass&disjunctive.rdconfigur&disjunctive.rdsurface&disjunctive.rdcondition&disjunctive.lightcond&disjunctive.weather&disjunctive.trafcontrl&disjunctive.month&disjunctive.contributing_factor&disjunctive.vehicle_type&location=10,35.79992,-78.64599
+however we only need 
+https://data.townofcary.org/api/records/1.0/search/?dataset=cpd-crash-incidents. 
 
-First make a new Crash Report TYPE. Copy `models/PoliceReport.php` to `models/CrashReport.php`.
-Change the class name appropriately (CrashReport).
-
-Then we setup the report for the Cary data source. Copy `models/PoliceReportC.php` to `models/CrashReportC.php`
-Change class names. Change all instances of ‘police’ to ‘crash’. This shows the report for the Cary data.
-
-Next we need to populate all the methods in the parent `models/Report.php` class.
+The REPORT model has 7 required methods:
 
  * getData(): This pulls the URL where the data comes from. In this case its at the bottom of the code for Cary API tab. Also, you probably need to filter on date. Find the appropriate datetime column to do that. Get the ‘number of hits’ column from the JSON response...the data we get back should be sorted by crash date too.
  * datatime() - crash_date in this case.
@@ -136,26 +151,12 @@ Next we need to populate all the methods in the parent `models/Report.php` class
  * other() - all the other records.
  * title() - what are we going to say to the humans: summarizing the date. Here we went with vehicle1 and vehicle2 as our summary.
  * popupContent() - same idea.
-
-Copy `models/CrimeMessage.php` to `models/CrashMessageSearch.php`.
-Change class names. Change ‘police’ to ‘crash’ within the file. This is responsible for the message that is exported to the citygram geojson feed.
-
-Copy `models/CrimeMessageSearch.php` to `models/CrashMessageSearch.php`
-Change class names. It would be used for the citygram-connector filtering (but we don’t do much with that now).
-
-Copy `models/CrimeReportCSearch.php` to `models/CrashReportCSearch.php`
-Change class names.
-
-Copy `controllers/PoliceReportController.php` to `controllers/CrashReportController.php`
-Change class names. Rename names appropriately.
-
-Copy `controllers/CrimeMessageController.php` to `controllers/CrashMessageController.php`
-Change class names. Rename names appropriately.
-
-Copy `controllers/PoliceReportCController.php` to `controllers/CrashReportCController.php`
-Change class names. Rename names appropriately.
+ 
+These methods build the Report and Message documents. See the sources for details.
 
 Finally, load the data into the database:
 
+From the root directory run:
+
     # last 365 days
-    ./yii.sh load CrashReport 365
+    ./yii.sh load CrashReportCary 365

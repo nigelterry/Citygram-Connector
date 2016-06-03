@@ -20,7 +20,6 @@ class ZoningReportCary extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'zoning-message';
 		$this->pageTitle = 'Cary Re-zoning Report';
 		$this->messageType = 'ZoningMessage';
 		$this->datasetName = 'Cary Zoning Report';

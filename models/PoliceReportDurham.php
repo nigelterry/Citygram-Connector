@@ -18,7 +18,6 @@ class PoliceReportDurham extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'crime-message';
 		$this->pageTitle = 'Durham Police Report';
 		$this->messageType = 'CrimeMessage';		
 		$this->datasetName = 'Durham Police Report';

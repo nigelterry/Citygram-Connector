@@ -17,7 +17,6 @@ class PoliceReportCary extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'crime-message';
 		$this->pageTitle = 'Cary Police Report';
 		$this->messageType = 'CrimeMessage';
 		$this->datasetName = 'Cary Police Report';

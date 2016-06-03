@@ -25,7 +25,6 @@ class PermitReportRaleigh extends BaseReport
 
 	public function modelConstruct()
 	{
-		$this->messageUrl = 'permit-message';
 		$this->pageTitle = 'Raleigh Permit Report';
 		$this->messageType = 'PermitMessage';
 		$this->datasetName = 'Raleigh Permit Report';
