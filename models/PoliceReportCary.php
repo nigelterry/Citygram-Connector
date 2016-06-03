@@ -211,7 +211,7 @@ class PoliceReportCary extends BaseReport  // All REPORT Models extend from Base
 	 * @return object
 	 */
 	public function geometry($record){
-        return (object)($record->geometry ?? null);
+        return (object)($record->geometry ? $record->geometry : null);
     }
 
 	/**

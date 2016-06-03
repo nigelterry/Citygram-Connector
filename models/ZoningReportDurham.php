@@ -99,11 +99,11 @@ class ZoningReportDurham extends BaseReport
 
     public function geometry($record){
         $properties = $record->fields;
-        return (object)($properties->geo_shape ?? null);
+        return (object)($properties->geo_shape ? $properties->geo_shape : null);
     }
 
     public function center($record){
-        return (object)($record->geometry ?? null);
+        return (object)($record->geometry ? $record->geometry : null);
     }
 
     public function other($record){

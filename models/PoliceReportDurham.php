@@ -121,7 +121,7 @@ class PoliceReportDurham extends BaseReport
     }
 
     public function geometry($record){
-        return (object)($record->geometry ?? null);
+        return (object)($record->geometry ? $record->geometry : null);
     }
 
     public function other($record){

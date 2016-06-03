@@ -117,7 +117,7 @@ class ZoningReportCary extends BaseReport
 
     public function geometry($record){
         $properties = $record->fields;
-        return (object)($properties->geo_shape ?? null);
+        return (object)($properties->geo_shape ? $properties->geo_shape : null);
     }
 
     public function center($record){

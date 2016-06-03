@@ -116,7 +116,7 @@ class PoliceReportRaleigh extends BaseReport
     }
 
     public function geometry($record){
-        return (object)($record->location ?? null);
+        return (object)($record->location ? $record->geometry : null);
     }
     
     public function other($record){
