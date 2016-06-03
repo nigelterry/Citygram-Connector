@@ -74,7 +74,6 @@ class PoliceReportRaleigh extends BaseReport
 			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
 			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
 			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
-			$this->actionColumn(),
 		];
 	}
 

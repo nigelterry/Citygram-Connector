@@ -52,4 +52,20 @@ class CrashMessage extends BaseMessage
         ];
     }
 
+	public function modelIndexAttributes()
+	{
+		return [
+			'dataset' => '',
+			'id' => '',
+			'type' => '',
+			'long_url' => ':url',
+			'short_url' => ':url',
+			'properties.title' => '',
+			'properties.popupContent' => '',
+			'geometry.type' => '',
+			'geometry.coordinates.1' => '',
+			'geometry.coordinates.0' => '',
+		];
+	}
+
 }

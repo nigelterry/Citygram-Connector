@@ -34,6 +34,21 @@ class ZoningMessage extends BaseMessage
         ];
     }
 
+	public function modelIndexAttributes()
+	{
+		return [
+			'id' => '',
+			'type' => '',
+			'dataset' => '',
+			'datetime.sec' => ':date',
+			'center.coordinates.1' => '',
+			'center.coordinates.0' => '',
+			'short_url' => ':url',
+			'properties.title' => '',
+			'properties.popupContent' => '',
+		];
+	}
+
     /**
      * @inheritdoc
      */

@@ -48,7 +48,21 @@ class ZoningReportDurham extends BaseReport
 		];
 	}
 
-    public function title($url)
+	/**
+	 * @inheritdoc
+	 */
+	public function modelIndexAttributes()
+	{
+		return [
+			'datetime.sec' => ':date',
+			'properties.zone_gen' => '',
+			'properties.zone_code' => '',
+			'properties.shape_area' => ''
+		];
+	}
+
+
+	public function title($url)
     {
         $properties = (object)$this->properties;
         return 'New Zoning Application HERE->' . $url . ' ' .

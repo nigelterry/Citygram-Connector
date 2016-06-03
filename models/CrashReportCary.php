@@ -32,36 +32,42 @@ class CrashReportCary extends BaseReport
     {
         return [
             'dataset' => 'Source',
-            'properties.id' => 'Cary Police ID #',
-            'properties.crime_category' => 'Crime Category',
-            'properties.crime_type' => 'Crime Type',
-            'properties.crimeday' => 'Day of week',
-            'properties.date_from' => 'Start Date',
-            'properties.from_time' => 'Start Time',
-            'properties.date_to' => 'End Date',
-            'properties.to_time' => 'End Time',
-            'properties.lat' =>'Latitude',
-            'properties.lon' => 'Longitude',
-            'properties.residential_subdivision' => 'Subdivision',
+            'properties.lightcond' => 'Light Conditions',
+            'properties.location_description' => 'Location',
+            'properties.injuries' => 'Injuries',
+            'properties.vehicle1' => 'First Vehicle',
+            'properties.vehicle2' => 'Second Vehicle',
+            'properties.weather' => 'Weather Conditions',
         ];
     }
 
     public function modelViewAttributes(){
         return [
             'dataset' => '',
-            'properties.id' => '',
-            'properties.crime_category' => '',
-            'properties.crime_type' => '',
-            'properties.crimeday' => '',
-            'properties.date_from' => ':date',
-            'properties.from_time' => 'time',
-            'properties.date_to' => 'date',
-            'properties.to_time' => 'time',
+	        'properties.lightcond' => '',
+	        'properties.weather' => '',
+	        'properties.location_description' => '',
+	        'properties.injuries' => '',
+	        'properties.vehicle1' => '',
+	        'properties.vehicle2' => '',
             'properties.lat' => '',
-            'properties.lon' => '',
-            'properties.residential_subdivision' => '',
+            'properties.lon' => ''
         ];
     }
+
+	public function modelIndexAttributes(){
+		return [
+			'dataset' => '',
+			'properties.lightcond' => '',
+			'properties.weather' => '',
+			'properties.location_description' => '',
+			'properties.injuries' => '',
+			'properties.vehicle1' => '',
+			'properties.vehicle2' => '',
+			'properties.lat' => '',
+			'properties.lon' => ''
+		];
+	}
 
     public function title($shortUrl)
     {

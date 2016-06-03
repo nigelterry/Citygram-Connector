@@ -79,12 +79,7 @@ Trait MessageTrait {
 		if ( method_exists( $this, 'modelViewAttributes' ) ) {
 			$atts = array_merge( $atts, $this->modelViewAttributes() );
 		}
-
-		$flat = [];
-		foreach($atts as $att => $format){
-			$flat[] = $att . $format;
-		}
-		return $flat;
+		return $this->flatten($atts);
 	}
 
 	/**
@@ -128,8 +123,7 @@ Trait MessageTrait {
 		if ( method_exists( $this, 'modelIndexAttributes' ) ) {
 			$atts = array_merge( $atts, $this->modelIndexAttributes() );
 		}
-
-		return $atts;
+		return $this->flatten($atts);
 	}
 
 

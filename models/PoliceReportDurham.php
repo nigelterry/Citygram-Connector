@@ -57,6 +57,22 @@ class PoliceReportDurham extends BaseReport
         ];
     }
 
+	/**
+	 * @inheritdoc
+	 */
+	public function modelIndexAttributes(){
+		return [
+			'dataset' => '',
+			'properties.inci_id' => '',
+			'properties.reportedas' => '',
+			'properties.chrgdesc' => '',
+			'datetime.sec' => ':datetime',
+			'geometry.coordinates.1' => '',
+			'geometry.coordinates.0' => '',
+			'properties.big_zone',
+		];
+	}
+
     /**
      * @inheritdoc
      */    public function title($shortUrl)

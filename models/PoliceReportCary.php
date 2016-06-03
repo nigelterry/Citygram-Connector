@@ -101,6 +101,30 @@ class PoliceReportCary extends BaseReport  // All REPORT Models extend from Base
     }
 
 	/**
+	 *
+	 * function modelViewAttributes
+	 *
+	 * @return associative array of REPORT attributes for the item and view pages. Keys are the attribute names.
+	 * values are format strings. See Yii2 docs for full details, or use ':date', ':datetime', ':time'
+	 */
+	public function modelIndexAttributes(){
+		return [
+			'dataset' => '',
+			'properties.id' => '',
+			'properties.crime_category' => '',
+			'properties.crime_type' => '',
+			'properties.crimeday' => '',
+			'properties.date_from' => ':date',
+			'properties.from_time' => ':time',
+			'properties.date_to' => ':date',
+			'properties.to_time' => ':time',
+			'properties.lat' => '',
+			'properties.lon' => '',
+			'properties.residential_subdivision' => '',
+		];
+	}
+
+	/**
 	 * 
 	 * The following functions take the record returned from the api (or elsewhere) and return information 
 	 * used in building the MESSAGE documents.

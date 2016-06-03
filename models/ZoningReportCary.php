@@ -43,6 +43,23 @@ class ZoningReportCary extends BaseReport
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function modelIndexAttributes()
+	{
+		return [
+			'dataset' => '',
+			'properties.casename' => '',
+			'center.coordinates.1' => '',
+			'center.coordinates.0' => '',
+			'datetime.sec' => ':date',
+			'properties.current_zo' => '',
+			'properties.proposed_z' => '',
+			'properties.acreage' => ''
+		];
+	}
+
+	/**
      * @inheritdoc
      */
     public function modelAttributeLabels()

@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\CrimeMessageSearch */
+/* @var $searchModel app\models\CrimeMessage */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $title = $searchModel->pageTitle . 's';
@@ -18,11 +18,12 @@ $this->params['breadcrumbs'][] = $title;
 
     <?php
     $indexAttributes = $searchModel->indexAttributes();
+    $actionColumn = $searchModel->actionColumn($searchModel);
     if($indexAttributes !== []){
 	    echo GridView::widget( [
 		    'dataProvider' => $dataProvider,
 		    'filterModel'  => $searchModel,
-		    'columns'      => $indexAttributes
+		    'columns'      => array_merge($indexAttributes, [$actionColumn])
 	    ]);
     } else {
 	    echo GridView::widget( [
@@ -39,7 +40,6 @@ $this->params['breadcrumbs'][] = $title;
 			    [ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Report Date / Time' ],
 			    [ 'attribute' => 'created_at.sec', 'format' => 'datetime', 'label' => 'Added to DB at' ],
 			    [ 'attribute' => 'updated_at.sec', 'format' => 'datetime', 'label' => 'Updated at' ],
-			    $searchModel->actionColumn(),
 		    ],
 	    ] );
     }

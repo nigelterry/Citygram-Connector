@@ -39,6 +39,25 @@ class PermitMessage extends BaseMessage
         ];
     }
 
+	/**
+	 * @inheritdoc
+	 */
+	public function modelIndexAttributes()
+	{
+		return [
+			'id' => '',
+			'type' => '',
+			'dataset' => '',
+			'geometry.coordinates.0' => '',
+			'geometry.coordinates.1' => '',
+			'dataset' => '',
+			'short_url' => ':url',
+			'long_url' => ':url',
+			'properties.title' => '',
+			'properties.popupContent' => '',
+		];
+	}
+
     /**
      * @inheritdoc
      */

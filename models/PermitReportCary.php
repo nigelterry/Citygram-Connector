@@ -32,9 +32,31 @@ class PermitReportCary extends BaseReport
         return array_merge(parent::attributeLabels(),[
             '_id' => 'ID',
             'dataset' => 'Data Set',
-            "properties.datasetid" => 'Dataset ID'
+            'properties.datasetid' => 'Dataset ID',
+            'datetime.sec' => 'Date',
+            'properties.description' => 'Project Description',
+            'properties.originaladdress1' => 'Address',
+            'properties.originalcity' => 'City',
         ]);
     }
+	
+	public function modelViewAttributes(){
+		return [
+			'dataset' => '',
+			'properties.lat' => '',
+			'properties.lon' => ''
+		];
+	}
+
+	public function modelIndexAttributes(){
+		return [
+			'dataset' => '',
+			'datetime.sec' => ':date',
+			'properties.description' => '',
+			'properties.originaladdress1' => '',
+			'properties.originalcity' => '',
+		];
+	}
 
     public function title($url)
     {

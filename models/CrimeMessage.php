@@ -80,4 +80,31 @@ class CrimeMessage extends BaseMessage   // All MESSAGE models extend from BaseM
         ];
     }
 
+	/**
+	 * @inheritdoc
+	 *
+	 * This method can be removed if it returns an empty array
+	 *
+	 * This configures the fields shown in the view, item and index pages
+	 *
+	 * associative array of MESSAGE attributes for the index page. Keys are the attribute names.
+	 * values are format strings. See Yii2 docs for full details, or use ':date', ':datetime', ':time'
+	 *
+	 */
+	public function modelIndexAttributes()
+	{
+		return [
+			'dataset' => '',
+			'id' => '',
+			'type' => '',
+			'long_url' => ':url',
+			'short_url' => ':url',
+			'properties.title' => '',
+			'properties.popupContent' => '',
+			'geometry.type' => '',
+			'geometry.coordinates.1' => '',
+			'geometry.coordinates.0' => '',
+		];
+	}
+
 }

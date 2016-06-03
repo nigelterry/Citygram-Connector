@@ -45,6 +45,20 @@ class PermitReportRaleigh extends BaseReport
 		];
 	}
 
+	function modelIndexAttributes()
+	{
+		return [
+			'properties.originaladdressfull_address' => '',
+			'properties.originaladdressfull_city' => '',
+			'properties.originaladdressfull_state' => '',
+			'properties.originaladdressfull_zip' => '',
+			'properties.proposedworkdescription' => '',
+			'properties.statuscurrentmapped' => '',
+			'properties.contractorcompanyname' => '',
+			'properties.estprojectcost:currency' => '',
+		];
+	}
+
 	function modelAttributelabels()
 	{
 		return [
@@ -55,7 +69,7 @@ class PermitReportRaleigh extends BaseReport
 			'properties.proposedworkdescription' => 'Description',
 			'properties.contractorcompanyname' => "Contractor",
 			'properties.estprojectcost' => 'Estimated Project Cost',
-			'datetime.sec' => 'Issued date / time',
+			'datetime.sec' => 'Date',
 			'properties.statuscurrentmapped' => 'Current Status',
 		];
 	}
