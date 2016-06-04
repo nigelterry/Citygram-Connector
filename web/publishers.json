@@ -1,55 +1,58 @@
-[  {
-  "id": 40,
-  "title": "Building Permits",
-  "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/crash-message",
-  "updated_at": "2016-04-25 18:40:29 UTC",
-  "created_at": "2016-04-25 18:31:59 UTC",
-  "active": true,
-  "city": "Research Triangle",
-  "icon": "car-accidents.png",
-  "visible": true,
-  "state": "NC",
-  "description": "Who had a Whoopsy in their car",
-  "tags": [
-    "triangle"
-  ],
-  "event_display_endpoint": null,
-  "events_are_polygons": null
-},  {
-  "id": 39,
-  "title": "Building Permits",
-  "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/zoning-message",
-  "updated_at": "2016-04-25 18:40:29 UTC",
-  "created_at": "2016-04-25 18:31:59 UTC",
-  "active": true,
-  "city": "Research Triangle",
-  "icon": "rezone.png",
-  "visible": true,
-  "state": "NC",
-  "description": "Who wants to build a Chemical Plant behind my house",
-  "tags": [
-    "triangle"
-  ],
-  "event_display_endpoint": null,
-  "events_are_polygons": null
-},  {
-  "id": 38,
-  "title": "Crime Reports",
-  "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/crime-message",
-  "updated_at": "2016-04-25 18:40:29 UTC",
-  "created_at": "2016-04-25 18:31:59 UTC",
-  "active": true,
-  "city": "Research Triangle",
-  "icon": "police-incidents.png",
-  "visible": true,
-  "state": "NC",
-  "description": "Who's been naughty and where",
-  "tags": [
-    "triangle"
-  ],
-  "event_display_endpoint": null,
-  "events_are_polygons": null
-},
+[
+  {
+    "id": 40,
+    "title": "Vehicle Crash Reports",
+    "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/crash-message",
+    "updated_at": "2016-04-25 18:40:29 UTC",
+    "created_at": "2016-04-25 18:31:59 UTC",
+    "active": true,
+    "city": "Research Triangle",
+    "icon": "car-accident.png",
+    "visible": true,
+    "state": "NC",
+    "description": "Who had a Whoopsy in their car",
+    "tags": [
+      "triangle"
+    ],
+    "event_display_endpoint": null,
+    "events_are_polygons": null
+  },
+  {
+    "id": 39,
+    "title": "Re-Zoning Requests",
+    "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/zoning-message",
+    "updated_at": "2016-04-25 18:40:29 UTC",
+    "created_at": "2016-04-25 18:31:59 UTC",
+    "active": true,
+    "city": "Research Triangle",
+    "icon": "rezone.png",
+    "visible": true,
+    "state": "NC",
+    "description": "Who wants to build a Chemical Plant behind my house",
+    "tags": [
+      "triangle"
+    ],
+    "event_display_endpoint": null,
+    "events_are_polygons": null
+  },
+  {
+    "id": 38,
+    "title": "Crime Reports",
+    "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/crime-message",
+    "updated_at": "2016-04-25 18:40:29 UTC",
+    "created_at": "2016-04-25 18:31:59 UTC",
+    "active": true,
+    "city": "Research Triangle",
+    "icon": "police-incidents.png",
+    "visible": true,
+    "state": "NC",
+    "description": "Who's been naughty and where",
+    "tags": [
+      "triangle"
+    ],
+    "event_display_endpoint": null,
+    "events_are_polygons": null
+  },
   {
     "id": 37,
     "title": "Building Permits",
