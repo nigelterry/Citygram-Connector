@@ -1,9 +1,9 @@
 Publisher.create! do |pub|
   pub.title = "Crime Reports"
-  pub.endpoint = "http://citygram.codeforcary.org/crime-reports"
+  pub.endpoint = "http://citygram-connector-hack.sapphirewebservices.com/crime-reports"
   pub.active = true
-  pub.visible = false
-  pub.city = "Research Triangle, NC"
+  pub.visible = true
+  pub.city = "Research Triangle"
   pub.icon = "police-incidents.png"
   pub.state = "NC"
   pub.description = "Crime Reports from local Police Departments"
