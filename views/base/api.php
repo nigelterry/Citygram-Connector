@@ -9,8 +9,8 @@ use yii\web\Response;
 /* @var $searchModel app\models\PoliceReportSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-	file_put_contents( __DIR__ . '/../runtime/logs/api_pull.log',
-		$_SERVER['REQUEST_URI'] . ' ' . $_SERVER['REMOTE_ADDRESS'] ."\n", FILE_APPEND);
+//	file_put_contents( __DIR__ . '/../runtime/logs/api_pull.log',
+//		$_SERVER['REQUEST_URI'] . ' ' . $_SERVER['REMOTE_ADDR'] ."\n", FILE_APPEND);
     $models = $dataProvider->getModels();
     $models = array_values($models);
     $headers = Yii::$app->response->headers;

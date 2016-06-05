@@ -17,7 +17,8 @@ use yii\helpers\Inflector;
 use yii\widgets\DetailView;
 use dosamigos\leaflet\types\LatLng;
 use dosamigos\leaflet\layers\Marker;
-use \dosamigos\leaflet\layers\Polygon;
+use dosamigos\leaflet\layers\Polygon;
+use dosamigos\leaflet\layers\PolyLine;
 use dosamigos\leaflet\layers\TileLayer;
 use dosamigos\leaflet\LeafLet;
 use dosamigos\leaflet\widgets\Map;
@@ -99,7 +100,7 @@ $leaflet->appendJs(isset(Yii::$app->request->queryParams['query_limit']) ?
 $leaflet->appendJs(file_get_contents('js/maptools.js'));
 
 if (isset($model->center['coordinates'][0])) {
-    $polygon = new Polygon();
+    $polygon = ($model->geometry['type'] === 'MultiLineString' ? new PolyLine() : new Polygon());
     $latlng = $model->geometry['coordinates'][0];
     $a = [];
     foreach ($latlng as $l) {

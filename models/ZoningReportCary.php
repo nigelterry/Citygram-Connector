@@ -23,6 +23,7 @@ class ZoningReportCary extends BaseReport
 		$this->pageTitle = 'Cary Re-zoning Report';
 		$this->messageType = 'ZoningMessage';
 		$this->datasetName = 'Cary Zoning Report';
+
 	}
 
 	/**

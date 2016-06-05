@@ -112,12 +112,12 @@ Trait ModelTrait {
 	 */
 	public function baseAttributeLabels() {
 		return [
-			'_id'                    => 'MongoID',
+/*			'_id'                    => 'MongoID',
 			'created_at'             => 'Created At',
 			'updated_at'             => 'Updated At',
 			'geometry.coordinates.0' => 'Longitude',
 			'geometry.coordinates.1' => 'Latitude',
-			'datetime.sec'           => 'Date / Time',
+			'datetime.sec'           => 'Date / Time',*/
 		];
 	}
 
@@ -172,8 +172,33 @@ Trait ModelTrait {
 		}
 
 		if ( $this->ne_lat ) {
+
 			$query->andWhere( [
 				'geometry' =>
+					[
+						'$geoIntersects' => [
+							'$geometry' => [
+								'type'        => 'Polygon',
+								'coordinates' => [
+									[
+										[ (double) $this->sw_long, (double) $this->sw_lat ],
+										[ (double) $this->sw_long, (double) $this->ne_lat ],
+										[ (double) $this->ne_long, (double) $this->ne_lat ],
+										[ (double) $this->ne_long, (double) $this->sw_lat ],
+										[ (double) $this->sw_long, (double) $this->sw_lat ]
+									],
+								],
+							]
+						]
+					]
+			] );
+
+
+
+
+
+			/*			$query->andWhere( [
+				'center' => // 'geometry'
 					[
 						'$geoWithin' => [
 							'$geometry' => [
@@ -190,7 +215,7 @@ Trait ModelTrait {
 							]
 						]
 					]
-			] );
+			] );*/
 		}
 
 		if ( ! $this->validate() ) {

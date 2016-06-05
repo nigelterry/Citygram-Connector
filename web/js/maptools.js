@@ -26,14 +26,16 @@ function drawRelated(relates){
     L.geoJson(relates, {
         onEachFeature: function(feature, layer) {
             // does this feature have a property named popupContent?
+            this.color = '#F00';
+            this.fill = false;
             if (feature.properties && feature.properties.popupContent) {
                 layer.bindPopup(feature.properties.popupContent, {className : 'secondary-popup', autoPan  : true});
             }
         },
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, geojsonMarkerOptions);
-        }
-    }).addTo(markers);
+        },
+    }).addTo(markers).bringToBack();
     map.once('zoomend dragend resize', loadRelated);
     marker.once('onclick', popupMarker);
 }
