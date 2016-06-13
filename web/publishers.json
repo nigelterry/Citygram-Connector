@@ -1,5 +1,23 @@
 [
   {
+    "id": 41,
+    "title": "Event Road Closures",
+    "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/event-message",
+    "updated_at": "2016-04-25 18:40:29 UTC",
+    "created_at": "2016-04-25 18:31:59 UTC",
+    "active": true,
+    "city": "Research Triangle",
+    "icon": "street-closure.png",
+    "visible": true,
+    "state": "NC",
+    "description": "What roads are being closed for planned events",
+    "tags": [
+      "triangle"
+    ],
+    "event_display_endpoint": null,
+    "events_are_polygons": null
+  },
+  {
     "id": 40,
     "title": "Vehicle Crash Reports",
     "endpoint": "http:\/\/citygram-connector-hack.sapphirewebservices.com\/crash-message",

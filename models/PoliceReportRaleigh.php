@@ -69,8 +69,8 @@ class PoliceReportRaleigh extends BaseReport
 		return [
 			[ 'class' => 'yii\grid\SerialColumn' ],
 			[ 'attribute' => 'datetime.sec', 'format' => 'datetime', 'label' => 'Incident Date / Time' ],
-			'id',
-			'dataset',
+			'id' => '',
+			'dataset' => '',
 			[ 'attribute' => 'datetime.sec', 'format' => 'date', 'label' => 'Report Date / Time' ],
 			[ 'attribute' => 'created_at.sec', 'format' => 'date', 'label' => 'Added to DB at' ],
 			[ 'attribute' => 'updated_at.sec', 'format' => 'date', 'label' => 'Updated at' ],
@@ -116,7 +116,7 @@ class PoliceReportRaleigh extends BaseReport
     }
 
     public function geometry($record){
-        return (object)($record->location ? $record->geometry : null);
+        return (object)(!empty($record->location) ? $record->location : null);
     }
     
     public function other($record){

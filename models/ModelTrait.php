@@ -112,12 +112,12 @@ Trait ModelTrait {
 	 */
 	public function baseAttributeLabels() {
 		return [
-/*			'_id'                    => 'MongoID',
-			'created_at'             => 'Created At',
-			'updated_at'             => 'Updated At',
-			'geometry.coordinates.0' => 'Longitude',
-			'geometry.coordinates.1' => 'Latitude',
-			'datetime.sec'           => 'Date / Time',*/
+			/*			'_id'                    => 'MongoID',
+						'created_at'             => 'Created At',
+						'updated_at'             => 'Updated At',
+						'geometry.coordinates.0' => 'Longitude',
+						'geometry.coordinates.1' => 'Latitude',
+						'datetime.sec'           => 'Date / Time',*/
 		];
 	}
 
@@ -194,9 +194,6 @@ Trait ModelTrait {
 			] );
 
 
-
-
-
 			/*			$query->andWhere( [
 				'center' => // 'geometry'
 					[
@@ -242,24 +239,51 @@ Trait ModelTrait {
 	public function actionColumn( $model ) {
 		return [
 			'class'      => 'yii\grid\ActionColumn',
-			'template'   => '{view} {dump} {map} {item}',
+			'template'   => '{view} {dump} {item} {map} {message} {source}',
 			'urlCreator' => function ( $action, $model, $key, $index ) {
 				return Url::to( [ $model->urlName . '/' . $action, 'id' => $key->{'$id'} ] );
 			},
 			'buttons'    => [
-				'map'  => function ( $url, $model, $key ) {
-					return ( isset( $model->geometry['coordinates'][0] ) &&
-					         $model->hasMap ) ? Html::a( 'Map', $url ) : '';
+				'dump'    => function ( $url, $model, $key ) {
+					return Html::a( 'Dump', $url, [ 'class' => 'btn btn-primary btn-xs' ] );
 				},
-				'dump' => function ( $url, $model, $key ) {
-					return Html::a( 'Dump', $url );
+				'item'    => function ( $url, $model, $key ) {
+					return Html::a( 'Item', $url, [ 'class' => 'btn btn-primary btn-xs' ] );
 				},
-				'item' => function ( $url, $model, $key ) {
-					return Html::a( 'Item', $url );
+				'view'    => function ( $url, $model, $key ) {
+					return Html::a( 'View', $url, [ 'class' => 'btn btn-primary btn-xs' ] );
 				},
-				'view' => function ( $url, $model, $key ) {
-					return Html::a( 'View', $url );
+				'map'     => function ( $url, $model, $key ) {
+					if ( $model->hasMap ) {
+						return Html::a( 'Map', $url, [ 'class' => 'btn btn-primary btn-xs' ] );
+					} else {
+						if ( isset( $model->geometry['coordinates'][0] ) ) {
+							return Html::a( 'Map', [ $model->messageUrl . '/map', 'id' => (string) $model->_id ],
+								[ 'class' => 'btn btn-primary btn-xs' ] );
+						}
+
+						return '';
+					}
 				},
+				'source'  => function ( $url, $model, $key ) {
+					if ( $model->hasMap ) {
+						$sourceModelType = $model->source_type;
+						$sourceModel     = new $sourceModelType;
+
+						return Html::a( 'Source', [ $sourceModel->urlName . '/view', 'id' => (string) $model->_id ],
+							[ 'class' => 'btn btn-primary btn-xs' ] );
+					}
+
+					return '';
+				},
+				'message' => function ( $url, $model, $key ) {
+					if ( isset( $model->geometry['coordinates'][0] ) && !$model->hasMap ) {
+						return Html::a( 'Message', [ $model->messageUrl . '/view', 'id' => (string) $model->_id ],
+							[ 'class' => 'btn btn-primary btn-xs' ] );
+					}
+
+					return '';
+				}
 			],
 		];
 	}

@@ -43,8 +43,7 @@ class BaseController extends Controller {
 						'roles' => [ '@' ],
 					],
 					[
-						'allow'   => true,
-						'actions' => [ 'api', 'item', 'map', 'related'],
+						'allow'   => !isset(Yii::$app->request->queryParams['action']) || in_array(Yii::$app->request->queryParams['action'], [ 'api', 'item', 'map', 'related'])
 					],
 				],
 			],

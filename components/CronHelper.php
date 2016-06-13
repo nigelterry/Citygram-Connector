@@ -33,7 +33,7 @@ class CronHelper
             self::$pid = file_get_contents($lock_file);
             if (self::isrunning()) {
                 error_log("==" . self::$pid . "== Already in progress...");
-                return FALSE;
+                return false;
             } else {
                 error_log("==" . self::$pid . "== Previous job died abruptly...");
             }

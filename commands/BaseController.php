@@ -31,20 +31,25 @@ class BaseController extends Controller
     public function actionIndex($sourceModel, $days = 60)  // Action is default not Index
     {
         $source = ucwords($this->whatAction) . '_' . $sourceModel;
-        if (($pid = CronHelper::lock($source)) !== FALSE) {
-            $full_source = '\\app\\models\\' . $sourceModel;
-            $action = $this->whatAction;
-            $m = new $full_source;
-            $data = $m->$action($days);
-            echo $source . ' ' . $data['days'] . "\n";
-            unset($data['days']);
-            foreach ($data as $k => $v) {
-                echo $k . ' is ' . $v . "\n";
-            }
-            CronHelper::unlock($source);
-            echo $source . ' ran' . "\n";
-        } else {
-            echo $source . ' blocked' . "\n";
-        }
+	    $full_source = '\\app\\models\\' . $sourceModel;
+	    if(class_exists($full_source)) {
+		    if ( ( $pid = CronHelper::lock( $source ) ) !== false ) {
+			    $action = $this->whatAction;
+			    $m      = new $full_source;
+			    $data   = $m->$action( $days );
+			    echo $source . ' ' . $data['days'] . "\n";
+			    unset( $data['days'] );
+			    foreach ( $data as $k => $v ) {
+				    echo $k . ' is ' . $v . "\n";
+			    }
+			    CronHelper::unlock( $source );
+			    echo $source . ' ran' . "\n";
+		    } else {
+			    echo $source . ' blocked' . "\n";
+		    }
+	    } else {
+		    echo "$sourceModel does not exists. Can't load that model.\n";
+	    }
+	    exit();
     }
 }

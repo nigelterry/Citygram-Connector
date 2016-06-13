@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use \yii\helpers\Html;
+use app\components\ScrapeHtml;
 
 /**
  * This is the model class for collection "permit_report".
@@ -95,18 +96,13 @@ class PermitReportDurham extends BaseReport {
 
 	public function datetime( $record ) {
 //        $properties = (object)$this->properties;
-		if ( $table = $this->scrape( $record->fields->permit_id ) ) {
-			if ( $table === false ) {
-				return false;
-			}
-			$record->fields->status = $table[3][2];
+		$table = $this->scrape( $record->fields->permit_id );
+		if ( $table === false ) {
+			return false;
+		}
+		$record->fields->status = $table[3][2];
 
-			return new \MongoDate( strtotime( $table[3][3] ) );
-		} else {
-			$record->fields->failedFetch = true;
-
-			return new \MongoDate( time() );
-		}// Use today's date as they don't provide one
+		return new \MongoDate( strtotime( $table[3][3] ) );
 	}
 
 	public function id( $record ) {
@@ -148,127 +144,38 @@ class PermitReportDurham extends BaseReport {
 	}
 
 	public function scrape( $id ) {
+		$scrape = new ScrapeHtml(['uuid' => uniqid()]);
+//		$scrape->uuid = uniqid();
 		$url  = 'http://ldo.durhamnc.gov/durham/ldo_web/ldo_main.aspx';
-		$page = $this->httpGet( $url, [ ] );
-
-		$params = $this->analyzeForm( $page );
-		if ( $params === false ) {
-			return false;
+		$page1 = $scrape->getPage( $url );
+		$forms1 = $scrape->getForms( $page1 );
+		$inputs1 = $scrape->getInputs($forms1[0][0]);
+		foreach ($inputs1[1] as $key => $input){
+			$attributes1[$key] = $scrape->getAttributes($input);
+		}
+		$params1 = [];
+		foreach($attributes1 as $attribute){
+			$params1[$attribute['name']] = $attribute['value'];
 		}
 
-		$params['fn']   = 'LR_QUERY_DEVAPP2';
-		$params['pgid'] = 'qda2';
+		$params1['fn']   = 'LR_QUERY_DEVAPP2';
+		$params1['pgid'] = 'qda2';
 
-		$page = $this->httpPost( $url, $params );
-
-		$params2 = $this->analyzeForm( $page, 2 );
-		if ( $params === false ) {
-			return false;
+		$page2 = $scrape->getPage( $url, $params1, 'POST' );
+		$forms2 = $scrape->getForms( $page2 );
+		$inputs2 = $scrape->getInputs($forms2[0][0]);
+		foreach ($inputs2[1] as $key => $input){
+			$attributes = $scrape->getAttributes($input);
+			$params2[$attributes['name']] = !empty($attributes['value']) ? $attributes['value'] : '';
 		}
-
 		$params2['PERMIT_NUMBER'] = $id;
-		$params2['fn']            = 'LR_QUERY_DEVAPP_RS2';
-		$params2['SUBMIT']        = 'Submit';
-		$params                   = array_merge( $params, $params2 );
-		$page                     = $this->httpPost( $url, $params );
-		if ( strpos( $page, 'Invalid application number' ) ) {
+
+		$page3 = $scrape->getPage( $url, $params2, 'POST' );
+		if ( strpos( $page3, 'Invalid application number' ) ) {
 			return false;
 		}
-		$table = $this->parseTable( $page, 1 );
-
-		return $table;
-	}
-
-
-	private function httpPost( $url, $params ) {
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, $url );
-		curl_setopt( $ch, CURLOPT_COOKIEJAR, '/CookieJar.txt' );
-		curl_setopt( $ch, CURLOPT_COOKIEFILE, '/CookieJar.txt' );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_HEADER, false );
-		curl_setopt( $ch, CURLOPT_POST, 1 );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_0 );
-		$output = curl_exec( $ch );
-		curl_close( $ch );
-
-		return $output;
-	}
-
-	private function httpGet( $url, $params ) {
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, $url );
-		curl_setopt( $ch, CURLOPT_COOKIEJAR, '/CookieJar.txt' );
-		curl_setopt( $ch, CURLOPT_COOKIEFILE, '/CookieJar.txt' );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_HEADER, false );
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_0 );
-		$output = curl_exec( $ch );
-		curl_close( $ch );
-
-		return $output;
-	}
-
-	private function analyzeForm( $page, $req = 1000 ) {
-		$lines = explode( "\n", $page );
-		if ( 1 >= count( $lines ) ) {
-			return false;
-		}
-		$line = 0;
-		if ( count( $lines ) <= $line ) {
-			return false;
-		}
-		while ( ! strpos( $lines[ $line ], '<form' ) ) {
-			$line ++;
-		}
-		$params = [ ];
-		$line ++;
-		$count = 0;
-		while ( ! strpos( $lines[ $line ], '</form' ) && $count < $req ) {
-			if ( '' !== trim( $lines[ $line ] ) ) {
-				$parts              = explode( ' ', trim( $lines[ $line ] ) );
-				$keys               = explode( '"', $parts[2] );
-				$vals               = explode( '"', $parts[3] );
-				$params[ $keys[1] ] = $vals[1];
-				$count ++;
-			}
-			$line ++;
-		}
-
-		return $params;
-	}
-
-	function parseTable( $html, $which ) {
-		// Find the table
-		preg_match_all( "/<table.*?>.*?<\/[\s]*table>/s", $html, $table_html );
-
-		if ( 2 > count( $table_html[0] ) ) {
-			return false;;
-		}
-
-		preg_match_all( "/<tr.*?>(.*?)<\/[\s]*tr>/s", $table_html[0][ $which ], $matches );
-
-		$table = [ ];
-
-		foreach ( $matches[1] as $row_html ) {
-			preg_match_all( "/<td.*?>(.*?)<\/[\s]*td>/", str_replace( "\r\n", "", $row_html ), $td_matches );
-			$row = array();
-			for ( $i = 0; $i < count( $td_matches[1] ); $i ++ ) {
-				$td        = strip_tags( html_entity_decode( $td_matches[1][ $i ] ) );
-				$row[ $i ] = trim( $td );
-			}
-
-			if ( count( $row ) > 0 ) {
-				$table[] = $row;
-			}
-		}
-
-		return $table;
+		$tables = $scrape->getTables($page3);
+		return $scrape->parseTable($tables[0][1]);
 	}
 
 }

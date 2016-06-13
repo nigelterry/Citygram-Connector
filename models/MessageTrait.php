@@ -13,10 +13,10 @@ use yii\helpers\ArrayHelper;
 use yii\mongodb\ActiveRecord;
 
 Trait MessageTrait {
-	
+
 	use ModelTrait;
 
-	public $requiredProperties = ['pageTitle', 'mapUrl'];
+	public $requiredProperties = [ 'pageTitle', 'mapUrl' ];
 	public $mapUrl;
 
 	public function construct() {
@@ -31,7 +31,7 @@ Trait MessageTrait {
 		$rules = array_merge( $this->baseRules(),
 			[
 				[ [ '_id', 'datetime', 'short_url', 'sw_long', 'sw_lat', 'ne_long', 'ne_lat' ], 'safe' ],
-			]);
+			] );
 
 		if ( method_exists( $this, 'modelRules' ) ) {
 			$rules = array_merge( $rules, $this->modelRules() );
@@ -79,7 +79,8 @@ Trait MessageTrait {
 		if ( method_exists( $this, 'modelViewAttributes' ) ) {
 			$atts = array_merge( $atts, $this->modelViewAttributes() );
 		}
-		return $this->flatten($atts);
+
+		return $this->flatten( $atts );
 	}
 
 	/**
@@ -89,18 +90,18 @@ Trait MessageTrait {
 
 		$atts = array_merge( $this->baseAttributeLabels(),
 			[
-				'_id'                    => 'MongoID',
-				'id'                     => 'Unique ID',
-				'datetime.sec'               => 'Date / Time',
-				'type'                   => 'Message Type',
-				'dataset'                => 'Data Set',
-				'properties'             => 'Message',
-				'properties.dataset'     => 'Original Dataset',
-				'properties.short_url'   => 'Short Url',
-				'properties.title' => 'SMS Message',
+				'_id'                     => 'MongoID',
+				'id'                      => 'Unique ID',
+				'datetime.sec'            => 'Date / Time',
+				'type'                    => 'Message Type',
+				'dataset'                 => 'Data Set',
+				'properties'              => 'Message',
+				'properties.dataset'      => 'Original Dataset',
+				'properties.short_url'    => 'Short Url',
+				'properties.title'        => 'SMS Message',
 				'properties.popupContent' => 'Popup Content',
-				'long_url' => 'Full Url',
-				'short_url' => 'Shortened Url',
+				'long_url'                => 'Full Url',
+				'short_url'               => 'Shortened Url',
 			] );
 
 
@@ -123,7 +124,8 @@ Trait MessageTrait {
 		if ( method_exists( $this, 'modelIndexAttributes' ) ) {
 			$atts = array_merge( $atts, $this->modelIndexAttributes() );
 		}
-		return $this->flatten($atts);
+
+		return $this->flatten( $atts );
 	}
 
 
@@ -162,15 +164,29 @@ Trait MessageTrait {
 		$u = $this->mapUrl . $this->urlName . '/map?id=' . (string) $this->_id;
 		if ( empty( $this->short_url ) || $this->long_url != $u ) {
 			$this->long_url = $u;
-/*			if ( $this->useGoogle ) {
+
+			while ( ( $response = $this->createUrl( $this->long_url, 'json', 'Map of Crime Report ' . $this->id ) )
+			        && ( ! isset( $response->status ) || 
+			             $response->status != "success" )) {
+				file_put_contents( __DIR__ . '/../runtime/logs/trg.pw.error.log',
+					( "\n\n" . date( 'l jS \of F Y G:i:s ' ) . $this->long_url .
+					  "\n" . print_r( $response, true ) ), FILE_APPEND );
+				sleep( 5 );
+			}
+			$this->short_url = $response->shorturl;
+		}
+		return $this->short_url;
+	}
+
+	/*			if ( $this->useGoogle ) {
 				ini_set( 'max_execution_time', 1000 );
 				$wait   = 0;
 				$gooUrl = 'https://www.googleapis.com/urlshortener/v1/url?key=' . Yii::$app->params['key'];
 				while ( ( $goo = $this->post_request( $gooUrl, [ 'longUrl' => $this->long_url ] ) )
-				        && file_put_contents( __DIR__ . '/../runtime/logs/google.log',
+						&& file_put_contents( __DIR__ . '/../runtime/logs/google.log',
 						( "\n\n" . date( 'l jS \of F Y h:i:s A' ) .
 						  "\n" . print_r( $goo, true ) . "\nwait : $wait" ), FILE_APPEND )
-				        && $goo->status_code != 200 ) {
+						&& $goo->status_code != 200 ) {
 					if ( $goo->status_code == 403 ) {
 						$wait = 30;
 					} else {
@@ -182,18 +198,7 @@ Trait MessageTrait {
 				}
 				$this->short_url = $goo->id;
 			} else {*/
-				$response = $this->createUrl( $this->long_url, 'json', 'Map of Crime Report ' . $this->id );
-				if ( ! isset( $response->status ) || $response->status != "success" ) {
-					file_put_contents( __DIR__ . '/../runtime/logs/trg.pw.error.log',
-						( "\n\n" . date( 'l jS \of F Y h:i:s A' ) .
-						  "\n" . print_r( $response, true ) ), FILE_APPEND );
-				}
-				$this->short_url = $response->shorturl;
-			}
-/*		}*/
-
-		return $this->short_url;
-	}
+	/*		}*/
 
 	public function post_request( $url, $postParams ) {
 		$ch = curl_init();

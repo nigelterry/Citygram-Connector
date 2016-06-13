@@ -98,8 +98,7 @@ Trait ReportTrait {
 	public function indexAttributes() {
 		$atts = array_merge( $this->baseIndexAttributes(),
 			[
-				'datetime.sec' => ':datetime',
-				'dataset' => '',
+
 			] );
 
 		if ( method_exists( $this, 'modelIndexAttributes' ) ) {

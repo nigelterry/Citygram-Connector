@@ -103,7 +103,7 @@ class PermitReportCary extends BaseReport
     }
 
     public function geometry($record){
-        return (object)($record->geometry ? $record->geometry : null);
+        return (object)(!empty($record->geometry) ? $record->geometry : null);
     }
 
     public function other($record){

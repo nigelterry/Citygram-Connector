@@ -40,6 +40,7 @@ AppAsset::register($this);
                     ['label' => 'Permit Applications', 'url' => ['permit-message/index']],
                     ['label' => 'Rezoning Requests', 'url' => ['zoning-message/index']],
 		            ['label' => 'Crash Reports', 'url' => ['crash-message/index']],
+		                ['label' => 'Road Closures', 'url' => ['event-message/index']],
                     ['label' => 'Home', 'url' => ['/site/home']],
                     ['label' => 'About', 'url' => ['/site/about']],
 //                    ['label' => 'Contact', 'url' => ['/site/contact']],
@@ -58,7 +59,9 @@ AppAsset::register($this);
             <?= Breadcrumbs::widget([
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
-            <?= $content ?>
+            <div class="container">
+                <?= $content ?>
+            </div>
         </div>
     </div>
 
