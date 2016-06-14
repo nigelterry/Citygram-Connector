@@ -27,15 +27,6 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 27017, host: 37017
   config.vm.network "forwarded_port", guest: 9013, host: 9015
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
@@ -46,10 +37,6 @@ Vagrant.configure(2) do |config|
       owner: 48,
       group: 48,
       mount_options: ["dmode=777,fmode=777"]
-  #config.vm.synced_folder "http_config", "/etc/httpd/conf.d/vagrant",
-  #      owner: "root",
-  #      group: "root",
-  #      mount_options: ["dmode=775,fmode=664"]
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -92,11 +79,7 @@ Vagrant.configure(2) do |config|
 
     echo "extension=/usr/lib64/php/modules/mongodb.so" > /etc/php.d/mongodb.ini
 
-   # sudo yum install -y mariadb mariadb-server
-   # sudo systemctl start mariadb.service
-   # sudo cat /vagrant/database/setup.sql /vagrant/database/heartwordpress.sql | sed s_http://heartpetrescue.org_http://localhost:8080/heartpetrescue.org_ | mysql -u root
-
-  cat > /etc/yum.repos.d/mongodb-org-3.2.repo <<EOL
+    cat > /etc/yum.repos.d/mongodb-org-3.2.repo <<EOL
 [mongodb-org-3.2]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64/
@@ -105,30 +88,27 @@ enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc
 EOL
 
-  sudo yum install -y mongodb-org
-  sudo systemctl start mongod.service
+    sudo yum install -y mongodb-org
+    sudo systemctl start mongod.service
 
     sudo yum -y install httpd
     sudo bash -c 'echo "IncludeOptional /vagrant/config/site.conf" > /etc/httpd/conf.d/vagrant.conf'
     sudo systemctl start httpd.service
 
-   wget -nv http://www.webmin.com/download/rpm/webmin-current.rpm
-   sudo yum -y install perl-Net-SSLeay
-    sudo rpm -i webmin-current.rpm
-    sudo rm -f webmin-current.rpm
+    # Uncomment the following block to add a Webmin server for server management
+    #
+    # wget -nv http://www.webmin.com/download/rpm/webmin-current.rpm
+    # sudo yum -y install perl-Net-SSLeay
+    # sudo rpm -i webmin-current.rpm
+    # sudo rm -f webmin-current.rpm
 
+    curl -sS https://getcomposer.org/installer | php
+    sudo mv composer.phar /usr/local/bin/composer
+    cd /var/www/html/citygram
+    /usr/local/bin/composer global require "fxp/composer-asset-plugin:~1.1.1"
+    /usr/local/bin/composer install
 
-  #  sudo yum -y install phpmyadmin
-  #  sudo bash -c 'sed -i "s/127.0.0.1/127.0.0.1 10/" /etc/httpd/conf.d/phpMyAdmin.conf'
-  #  sudo systemctl restart httpd.service
-
-  curl -sS https://getcomposer.org/installer | php
-  sudo mv composer.phar /usr/local/bin/composer
-  cd /var/www/html/citygram
-  /usr/local/bin/composer global require "fxp/composer-asset-plugin:~1.1.1"
-  /usr/local/bin/composer install
-
-  cat > /etc/php.d/xdebug.ini <<EOL
+    cat > /etc/php.d/xdebug.ini <<EOL
 zend_extension=/usr/lib64/php/modules/xdebug.so
 xdebug.remote_enable=1
 xdebug.remote_handler=dbgp
