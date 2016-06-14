@@ -18,7 +18,7 @@
         "yiisoft/yii2": ">=2.0.4",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "yiisoft/yii2-mongodb": "^2.0",
+        "yiisoft/yii2-mongodb": "~2.1.0@dev",
         "2amigos/yii2-leaflet-extension": "*",
         "alexandernst/yii2-device-detect": "0.0.8"
     },

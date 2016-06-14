@@ -10,6 +10,6 @@ namespace app\models;
 
 use yii\mongodb\ActiveRecord;
 
-abstract class BaseMessage extends ActiveRecord{
+abstract class BaseMessage extends ActiveRecord {
 
 }

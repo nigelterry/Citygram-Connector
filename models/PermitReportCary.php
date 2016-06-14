@@ -8,7 +8,7 @@ use \yii\helpers\Html;
 /**
  * This is the model class for collection "permit_report".
  *
- * @property \MongoId|string $_id
+ * @property \MongoDB\BSON\ObjectID|string $_id
  */
 class PermitReportCary extends BaseReport
 {
@@ -65,8 +65,7 @@ class PermitReportCary extends BaseReport
             while(false);
         }
         return 'New Permit HERE->' . $url . ' ' .
-        date(' D M j \a\t g:ia',
-            $this->datetime->sec) .
+               $this->datetime->toDateTime()->format('D M j')  .
         (!empty($properties->description) ? ' Permit type ' .ucwords(strtolower($properties->description)) : "") .
         (isset($properties->owneraddress1) ? (' at address ' . ucwords(strtolower($properties->owneraddress1))) : "") .
         ' project cost $' . $properties->projectcost;
@@ -80,8 +79,7 @@ class PermitReportCary extends BaseReport
         }
         return Html::tag('div',
             'Permit #' . $properties->permitnum .
-            date(' D M j \a\t g:ia',
-                $this->datetime->sec) .
+            $this->datetime->toDateTime()->format('D M j')  .
             (!empty($properties->description) ? ' Permit type ' .ucwords(strtolower($properties->description)) : "") .
             (isset($properties->owneraddress1) ? ' at address ' . ucwords(strtolower($properties->owneraddress1)) . '. ' : "") .
             'Project cost $' . $properties->projectcost , ['class' => 'popup-body']) .
@@ -91,7 +89,7 @@ class PermitReportCary extends BaseReport
     public function datetime($record)
     {
         $properties = (object)$record->fields;
-        return new \MongoDate(strtotime($properties->applieddate));
+        return new \MongoDB\BSON\UTCDateTime(strtotime($properties->applieddate) * 1000);
     }
 
     public function id($record){

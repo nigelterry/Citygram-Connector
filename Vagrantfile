@@ -25,6 +25,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 10000, host: 9000
   config.vm.network "forwarded_port", guest: 27017, host: 37017
+  config.vm.network "forwarded_port", guest: 9013, host: 9015
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -41,10 +42,10 @@ Vagrant.configure(2) do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
-  #config.vm.synced_folder "website", "/var/www/html/newcrm.terry-realty.com",
-  #    owner: 48,
-  #    group: 48,
-  #    mount_options: ["dmode=777,fmode=777"]
+  config.vm.synced_folder "./", "/var/www/html/citygram",
+      owner: 48,
+      group: 48,
+      mount_options: ["dmode=777,fmode=777"]
   #config.vm.synced_folder "http_config", "/etc/httpd/conf.d/vagrant",
   #      owner: "root",
   #      group: "root",
@@ -78,13 +79,18 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell", privileged: true, inline: <<-SHELL
     set -x
 
+    sudo bash -c 'echo -e "root\nroot" | passwd root'
+
     sudo setenforce 0
 
-    sudo yum -y install nano atop htop
+    sudo yum -y install nano atop htop git
 
     sudo rpm -i https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-    sudo yum -y install php70w php70w-common php70w-opcache php70w-cli php70w-mysqlnd php70w-mbstring php70w-mcrypt php70w-intl php70-pecl-xdebug
+    sudo yum -y install php70w php70w-common php70w-opcache php70w-cli php70w-mysqlnd php70w-mbstring php70w-mcrypt php70w-intl php70w-pecl-xdebug php70w-devel
+    sudo yum -y install gcc openssl-devel
+    sudo /usr/bin/pecl install mongodb
 
+    echo "extension=/usr/lib64/php/modules/mongodb.so" > /etc/php.d/mongodb.ini
 
    # sudo yum install -y mariadb mariadb-server
    # sudo systemctl start mariadb.service
@@ -98,33 +104,44 @@ gpgcheck=1
 enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc
 EOL
+
   sudo yum install -y mongodb-org
-  sudo ssytemctl start mongodb.service
+  sudo systemctl start mongod.service
 
     sudo yum -y install httpd
-   sudo bash -c 'echo "IncludeOptional conf.d/vagrant/*.conf" > /etc/httpd/conf.d/vagrant.conf'
+    sudo bash -c 'echo "IncludeOptional /vagrant/config/site.conf" > /etc/httpd/conf.d/vagrant.conf'
     sudo systemctl start httpd.service
 
    wget -nv http://www.webmin.com/download/rpm/webmin-current.rpm
    sudo yum -y install perl-Net-SSLeay
     sudo rpm -i webmin-current.rpm
+    sudo rm -f webmin-current.rpm
+
 
   #  sudo yum -y install phpmyadmin
   #  sudo bash -c 'sed -i "s/127.0.0.1/127.0.0.1 10/" /etc/httpd/conf.d/phpMyAdmin.conf'
   #  sudo systemctl restart httpd.service
 
-  curl https://install.meteor.com/ | sh
+  curl -sS https://getcomposer.org/installer | php
+  sudo mv composer.phar /usr/local/bin/composer
+  cd /var/www/html/citygram
+  /usr/local/bin/composer global require "fxp/composer-asset-plugin:~1.1.1"
+  /usr/local/bin/composer install
 
-  sudo yum install npm
-  npm install
-
-    sudo bash -c 'echo -e "root\nroot" | passwd root'
+  cat > /etc/php.d/xdebug.ini <<EOL
+zend_extension=/usr/lib64/php/modules/xdebug.so
+xdebug.remote_enable=1
+xdebug.remote_handler=dbgp
+xdebug.remote_mode=req
+xdebug.remote_host=127.0.0.1
+xdebug.remote_port=9013
+EOL
 
   SHELL
 
   config.vm.provision :shell, run: "always", privileged: false,  inline: <<-SHELL
     set -x
-    sudo systemctl start httpd.service mongodb.service
+    sudo systemctl restart httpd.service mongod.service
   SHELL
 
 end

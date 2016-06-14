@@ -22,14 +22,14 @@ $this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => [$model->url
 	        $s = $model->source_type;
 	        $m = new $s;
 	        $n = $m->urlName;
-	        echo '&nbsp' . Html::a('Map', [$model->urlName . '/' . 'map', 'id' => (string)$model->_id], ['class' => 'btn btn-primary btn-sm']);
-	        echo '&nbsp' . Html::a('Source', [$n . '/view', 'id' => (string)$model->_id], ['class' => 'btn btn-warning btn-sm']);
+	        echo '&nbsp' . Html::a('Map', [$model->urlName . '/' . 'map', 'id' => $model->_id->__toString()], ['class' => 'btn btn-primary btn-sm']);
+	        echo '&nbsp' . Html::a('Source', [$n . '/view', 'id' => $model->_id->__toString()], ['class' => 'btn btn-warning btn-sm']);
         } else { //Report
 	        if(isset( $model->geometry['coordinates'][0])) {
 		        $n = $model->messageUrl;
-		        echo '&nbsp' . Html::a( 'Map', [ $n . '/map', 'id' => (string) $model->_id ],
+		        echo '&nbsp' . Html::a( 'Map', [ $n . '/map', 'id' => $model->_id->__toString() ],
 				        [ 'class' => 'btn btn-warning btn-sm' ] );
-		        echo '&nbsp' . Html::a( 'Message', [ $n . '/view', 'id' => (string) $model->_id ],
+		        echo '&nbsp' . Html::a( 'Message', [ $n . '/view', 'id' => $model->_id->__toString() ],
 				        [ 'class' => 'btn btn-warning btn-sm' ] );
 	        }
         }

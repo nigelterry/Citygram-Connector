@@ -82,7 +82,12 @@ Trait ReportTrait {
 	public function viewAttributes() {
 		$atts = array_merge( $this->baseViewAttributes(),
 			[
-				'datetime.sec' => ':datetime',
+                [
+                    'attribute' => 'datetime',
+                    'format'    => 'datetime',
+                    'label'     => 'Incident Date / Time',
+                    'value'     => $this->datetime->toDateTime()
+                ],
 				'dataset' => '',
 			] );
 
@@ -149,10 +154,10 @@ Trait ReportTrait {
 				$report = $m::find()->where( [ 'id' => $id ] )->one();
 				if ( $report === null ) {
 					$report             = new $m;
-					$report->_id        = new \MongoId();
+					$report->_id        = new \MongoDB\BSON\ObjectID;
 					$report->dataset    = $this->datasetName;
 					$report->id         = $id;
-					$report->created_at = new \MongoDate( time() );
+					$report->created_at = new \MongoDB\BSON\UTCDateTime( time() * 1000 );
 					$report->datetime   = $this->datetime( $record );
 					if ( $report->datetime === false ) {
 						file_put_contents( 'runtime/logs/BadDurhamPermitScrape', print_r( $record ) );

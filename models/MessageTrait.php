@@ -73,7 +73,7 @@ Trait MessageTrait {
 	public function viewAttributes() {
 		$atts = array_merge( $this->baseViewAttributes(),
 			[
-				'datetime.sec' => ':datetime',
+				[ 'attribute' => 'datetime', 'format' => 'datetime', 'label' => 'Incident Date / Time', 'value' => $this->datetime->toDateTime()]
 			] );
 
 		if ( method_exists( $this, 'modelViewAttributes' ) ) {
@@ -131,7 +131,7 @@ Trait MessageTrait {
 
 	public function buildMessage( ActiveRecord $report ) {
 		$this->messageContent( $report );
-		$this->created_at = new \MongoDate( time() );
+		$this->created_at = new \MongoDB\BSON\UTCDateTime( time() * 1000);
 		$this->save();
 	}
 
@@ -141,7 +141,7 @@ Trait MessageTrait {
 			$this->isNewRecord = true;
 		}
 		$this->messageContent( $report );
-		$this->updated_at = new \MongoDate( time() );
+		$this->updated_at = new \MongoDB\BSON\UTCDateTime( time() * 1000);
 		$this->save();
 	}
 

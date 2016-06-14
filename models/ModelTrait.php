@@ -163,7 +163,7 @@ Trait ModelTrait {
 		$this->load( $params );
 
 		if ( $this->days ) {
-			$period_start = new \MongoDate( max( time() - $this->days * 24 * 60 * 60, 0 ) );
+			$period_start = new \MongoDB\BSON\UTCDateTime( max( time() - $this->days * 24 * 60 * 60 * 1000, 0 ) );
 			$query->where( [ 'datetime' => [ '$gte' => $period_start ] ] );
 		}
 
@@ -241,7 +241,7 @@ Trait ModelTrait {
 			'class'      => 'yii\grid\ActionColumn',
 			'template'   => '{view} {dump} {item} {map} {message} {source}',
 			'urlCreator' => function ( $action, $model, $key, $index ) {
-				return Url::to( [ $model->urlName . '/' . $action, 'id' => $key->{'$id'} ] );
+				return Url::to( [ $model->urlName . '/' . $action, 'id' => $key->__toString() ] );
 			},
 			'buttons'    => [
 				'dump'    => function ( $url, $model, $key ) {
@@ -258,7 +258,7 @@ Trait ModelTrait {
 						return Html::a( 'Map', $url, [ 'class' => 'btn btn-primary btn-xs' ] );
 					} else {
 						if ( isset( $model->geometry['coordinates'][0] ) ) {
-							return Html::a( 'Map', [ $model->messageUrl . '/map', 'id' => (string) $model->_id ],
+							return Html::a( 'Map', [ $model->messageUrl . '/map', 'id' => $key->__toString() ],
 								[ 'class' => 'btn btn-primary btn-xs' ] );
 						}
 
@@ -270,7 +270,7 @@ Trait ModelTrait {
 						$sourceModelType = $model->source_type;
 						$sourceModel     = new $sourceModelType;
 
-						return Html::a( 'Source', [ $sourceModel->urlName . '/view', 'id' => (string) $model->_id ],
+						return Html::a( 'Source', [ $sourceModel->urlName . '/view', 'id' => $key->__toString() ],
 							[ 'class' => 'btn btn-primary btn-xs' ] );
 					}
 
@@ -278,7 +278,7 @@ Trait ModelTrait {
 				},
 				'message' => function ( $url, $model, $key ) {
 					if ( isset( $model->geometry['coordinates'][0] ) && !$model->hasMap ) {
-						return Html::a( 'Message', [ $model->messageUrl . '/view', 'id' => (string) $model->_id ],
+						return Html::a( 'Message', [ $model->messageUrl . '/view', 'id' => $key->__toString() ],
 							[ 'class' => 'btn btn-primary btn-xs' ] );
 					}
 
@@ -300,7 +300,7 @@ Trait ModelTrait {
 	public function flatten( $atts ) {
 		$flat = [ ];
 		foreach ( $atts as $att => $format ) {
-			if ( is_array( $format ) ) {
+			if ( !is_string( $format ) ) {
 				$flat[] = $format;
 			} else {
 				$flat[] = $att . $format;

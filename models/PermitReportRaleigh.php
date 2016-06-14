@@ -14,7 +14,7 @@ use yii\helpers\Html;
 /**
  * This is the model class for collection "permit_report".
  *
- * @property \MongoId|string $_id
+ * @property \MongoDB\BSON\ObjectID|string $_id
  */
 class PermitReportRaleigh extends BaseReport
 {
@@ -81,8 +81,7 @@ class PermitReportRaleigh extends BaseReport
 			while (false) ;
 		}
 		return 'New Permit HERE->' . $shortUrl . ' ' .
-		       date(' D M j \a\t g:ia',
-			       $this->datetime->sec) .
+               $this->datetime->toDateTime()->format('D M j') .
 		       '. Permit type ' .
 		       ucwords(strtolower($properties->description)) .
 		       (isset($properties->owneraddress1) ? (' at address ' . ucwords(strtolower($properties->owneraddress1))) : "");
@@ -93,8 +92,7 @@ class PermitReportRaleigh extends BaseReport
 		$properties = (object)$this->properties;
 		return Html::tag('div',
 			'Permit #' . $properties->permitnum .
-			date(' D M j \a\t g:ia',
-				$this->datetime->sec) .
+            $this->datetime->toDateTime()->format('D M j')  .
 			'. Permit type ' .
 			ucwords(strtolower($properties->description)) . ' ' .
 			(isset($properties->owneraddress1) ? ' at address ' . ucwords(strtolower($properties->owneraddress1)) .
@@ -104,7 +102,7 @@ class PermitReportRaleigh extends BaseReport
 
 	public function datetime($record)
 	{
-		return new \MongoDate(strtotime($record->issueddate));
+		return new \MongoDB\BSON\UTCDateTime(strtotime($record->issueddate) * 1000 );
 	}
 
 	public function id($record)

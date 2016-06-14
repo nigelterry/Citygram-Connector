@@ -53,12 +53,14 @@ $this->params['breadcrumbs'][] = ['label' => $title . 's', 'url' => [$model->url
         $result = [];
         foreach ($array as $k => $v) {
             if (is_object($v)) {
-                if ('MongoId' == get_class($v)) {
-                    $label = (($prefix != "") ? $prefix . '.' . $k : $k);
-                    $result = array_merge($result, [['attribute' => $label, 'label' => $label]]);
-                } elseif ('MongoDate' == get_class($v)) {
-                    $label = (($prefix != "") ? $prefix . '.' . $k : $k) . '.sec';
-                    $result = array_merge($result, [['attribute' => $label, 'label' => $label, 'format' => 'datetime']]);
+                if ('MongoDB\BSON\ObjectID' == get_class($v)) {
+                    $label = (("" != $prefix) ? $prefix . '.' . $k : $k);
+                    $result = array_merge($result, [['attribute' => $label, 'label' => $label,
+                                                     'value' => $v->__toString()]]);
+                } elseif ('MongoDB\BSON\UTCDateTime' == get_class($v)) {
+                    $label = (("" != $prefix) ? $prefix . '.' . $k : $k);
+                    $result = array_merge($result, [['attribute' => $label, 'label' => $label, 'format' => 'datetime',
+                                                     'value' => $v->toDateTime()]]);
                 }
             } else {
                 if

@@ -4,13 +4,12 @@ namespace app\models;
 
 use Yii;
 use \yii\helpers\Html;
-use yii\mongodb\ActiveRecord;
 use yii\helpers\Url;
 
 /**
  * This is the model class for collection "police_report".
  *
- * @property \MongoId|string $_id
+ * @property \MongoDB\BSON\ObjectID|string $_id
  */
 class EventReportRaleigh extends BaseReport {
 
@@ -78,7 +77,7 @@ class EventReportRaleigh extends BaseReport {
 		$properties = (object) $this->properties;
 
 		return 'Road Closure HERE->' . $shortUrl . ' ' .
-		       date( 'D M j', $this->datetime->sec ) .
+               $this->datetime->toDateTime()->format('D M j')  .
 		       ' from ' . $properties->setup_starttime .
 		       ' to ' . $properties->breakdown_endtime .
 		       ' ' . ( isset( $properties->event_name ) ? $properties->event_name : 'undefined' );
@@ -88,7 +87,7 @@ class EventReportRaleigh extends BaseReport {
 		$properties = (object) $this->properties;
 
 		return 'Road Closure ' .
-		       date( 'D M j', $this->datetime->sec ) .
+               $this->datetime->toDateTime()->format('D M j')  .
 		       ' from ' . $properties->setup_starttime .
 		       ' to ' . $properties->breakdown_endtime .
 		       ( isset( $properties->event_type ) ? ' for a ' . $properties->event_type . '. ' : '' ) .
@@ -99,7 +98,7 @@ class EventReportRaleigh extends BaseReport {
 	}
 
 	public function datetime( $record ) {
-		return new \MongoDate( $record->event_startdate );
+		return new \MongoDB\BSON\UTCDateTime( $record->event_startdate * 1000);
 	}
 
 	public function id( $record ) {

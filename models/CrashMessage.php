@@ -3,12 +3,11 @@
 namespace app\models;
 
 use Yii;
-use yii\mongodb\ActiveRecord;
 
 /**
  * This is the model class for collection 'message'.
  *
- * @property \MongoId|string $_id
+ * @property \MongoDB\BSON\ObjectID|string $_id
  */
 class CrashMessage extends BaseMessage
 {

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-use \yii\mongodb\ActiveRecord;
 
 /**
  * Class CrimeMessage

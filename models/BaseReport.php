@@ -8,7 +8,6 @@
 
 namespace app\models;
 
-
 use yii\mongodb\ActiveRecord;
 
 abstract class BaseReport extends ActiveRecord{
@@ -27,6 +26,7 @@ abstract class BaseReport extends ActiveRecord{
 
 	abstract public function other($record);
 
-	abstract public function getData($days, $start, $rows, &$nhits);  
+	abstract public function getData($days, $start, $rows, &$nhits);
 
 }
+
