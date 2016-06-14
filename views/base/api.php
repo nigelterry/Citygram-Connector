@@ -30,12 +30,8 @@ use yii\web\Response;
             } else {
                 echo ',';
             }
-//            $model->type = 'Feature';
-/*                        $properties = $model->properties;
-                        $properties['popupContent'] = $properties['title'];
-            //            $properties['name'] = $properties['residentialSubdivision'];
-                        $model->properties = $properties;*/
+            $model->datetime = $model->datetime->toDateTime()->format('c');
             echo json_encode(ArrayHelper::toArray($model), $pretty ? JSON_PRETTY_PRINT : 0);
         }
         echo '], "count" : ' . $count . '}';
-//        echo $count;
+        echo $count;

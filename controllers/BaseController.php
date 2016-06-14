@@ -182,7 +182,7 @@ class BaseController extends Controller {
 		$searchModel               = new $m;
 		$searchModel->days         = $days;
 		$searchModel->query_limit  = $limit;
-		$searchModel->query_select = [ 'id', 'geometry', 'properties.title' ];
+		$searchModel->query_select = [ 'id', 'geometry', 'properties.title', 'datetime' ];
 		$dataProvider              = $searchModel->search( Yii::$app->request->queryParams );
 		$dataProvider->pagination  = false;
 		$this->layout              = false;
