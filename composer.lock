@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b1c4bb38268d69fde4a5e9ef88852518",
+    "hash": "51a90bf09796747f18a0084be1e9734b",
     "content-hash": "d6455b58b2e73ae9ef11e22f611a5d1d",
     "packages": [
         {
@@ -748,12 +748,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-mongodb.git",
-                "reference": "e7956a228e073abc072c8fdda36803db5dab2af0"
+                "reference": "332edb1fa03255a1188c174e30042bbac964a4ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-mongodb/zipball/e7956a228e073abc072c8fdda36803db5dab2af0",
-                "reference": "e7956a228e073abc072c8fdda36803db5dab2af0",
+                "url": "https://api.github.com/repos/yiisoft/yii2-mongodb/zipball/332edb1fa03255a1188c174e30042bbac964a4ee",
+                "reference": "332edb1fa03255a1188c174e30042bbac964a4ee",
                 "shasum": ""
             },
             "require": {
@@ -788,7 +788,7 @@
                 "mongodb",
                 "yii2"
             ],
-            "time": "2016-06-14 15:19:20"
+            "time": "2016-06-15 14:45:24"
         },
         {
             "name": "yiisoft/yii2-swiftmailer",

@@ -24,8 +24,9 @@ Vagrant.configure(2) do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 10000, host: 9000
-  config.vm.network "forwarded_port", guest: 27017, host: 37017
-  config.vm.network "forwarded_port", guest: 9013, host: 9015
+  config.vm.network "forwarded_port", guest: 27017, host: 37017, auto_correct: true
+
+  #config.vm.network "forwarded_port", guest: 9013, host: 9015
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -89,6 +90,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc
 EOL
 
     sudo yum install -y mongodb-org
+    sudo sed -i 's/bindIp/#bindIp/' /etc/mongod.conf
     sudo systemctl start mongod.service
 
     sudo yum -y install httpd
@@ -113,11 +115,11 @@ zend_extension=/usr/lib64/php/modules/xdebug.so
 xdebug.remote_enable=1
 xdebug.remote_handler=dbgp
 xdebug.remote_mode=req
-xdebug.remote_host=127.0.0.1
+xdebug.remote_connect_back=1
 xdebug.remote_port=9013
 EOL
 
-crontab -l > mycron
+crontab -l -u apache > mycron
 echo MAILTO = NigelTerry@SapphireWebServices.com
 echo "0 * * * * /var/www/html/citygram/yii.sh load PoliceReportRaleigh 30"  >> mycron
 echo "5 * * * * /var/www/html/citygram/yii.sh load PoliceReportDurham 30"  >> mycron

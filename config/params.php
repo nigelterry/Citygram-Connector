@@ -2,7 +2,7 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'mapUrl' => 'http://citygram/',
+    'mapUrl' => 'http://localhost:8080/',
     'mapProvider' => 'Streetmap',
 //    'mapProvider' => 'HERE',
 	'urlShortenerUrl' => 'http://trg.pw/yourls-api.php',
