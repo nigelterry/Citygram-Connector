@@ -97,10 +97,10 @@ EOL
 
     # Uncomment the following block to add a Webmin server for server management
     #
-    # wget -nv http://www.webmin.com/download/rpm/webmin-current.rpm
-    # sudo yum -y install perl-Net-SSLeay
-    # sudo rpm -i webmin-current.rpm
-    # sudo rm -f webmin-current.rpm
+    wget -nv http://www.webmin.com/download/rpm/webmin-current.rpm
+    sudo yum -y install perl-Net-SSLeay
+    sudo rpm -i webmin-current.rpm
+    sudo rm -f webmin-current.rpm
 
     curl -sS https://getcomposer.org/installer | php
     sudo mv composer.phar /usr/local/bin/composer
@@ -117,11 +117,34 @@ xdebug.remote_host=127.0.0.1
 xdebug.remote_port=9013
 EOL
 
+crontab -l > mycron
+echo MAILTO = NigelTerry@SapphireWebServices.com
+echo "0 * * * * /var/www/html/citygram/yii.sh load PoliceReportRaleigh 30"  >> mycron
+echo "5 * * * * /var/www/html/citygram/yii.sh load PoliceReportDurham 30"  >> mycron
+echo "10 * * * * /var/www/html/citygram/yii.sh load PoliceReportCary 30"  >> mycron
+echo "15 * * * * /var/www/html/citygram/yii.sh load PermitReportCary 30"  >> mycron
+echo "20 * * * * /var/www/html/citygram/yii.sh load PermitReportRaleigh 30"  >> mycron
+echo "25 * * * * /var/www/html/citygram/yii.sh load PermitReportDurham30"  >> mycron
+echo "# 30 * * * * /var/www/html/citygram/yii.sh load ZoningReportRaleigh 30"  >> mycron
+echo "35 * * * * /var/www/html/citygram/yii.sh load ZoningReportCary 30"  >> mycron
+echo "40 * * * * /var/www/html/citygram/yii.sh load ZoningReportDurham 30"  >> mycron
+echo "# 45 * * * * /var/www/html/citygram/yii.sh load CrashReportRaleigh 30"  >> mycron
+echo "50 * * * * /var/www/html/citygram/yii.sh load CrashReportCary 30"  >> mycron
+echo "# 55 * * * * /var/www/html/citygram/yii.sh load CrashReportDurham 30"  >> mycron
+echo "0 * * * * /var/www/html/citygram/yii.sh load EventReportRaleigh 30"  >> mycron
+crontab -u apache mycron
+rm mycron
+
+
+
   SHELL
 
   config.vm.provision :shell, run: "always", privileged: false,  inline: <<-SHELL
     set -x
     sudo systemctl restart httpd.service mongod.service
   SHELL
+
+
+
 
 end

@@ -80,7 +80,7 @@ if ( YII_ENV_DEV ) {
 	$config['modules']['debug'] = 'yii\debug\Module';
 	$config['modules']['debug'] = [
 		'class'  => 'yii\debug\Module',
-		'allowedIPs' => [ '107.15.137.149', '127.0.0.1'],
+		'allowedIPs' => [ '107.15.137.149', '127.0.0.1', '10.0.2.2'],
 		'panels' => [
 			'mongodb'    => [ 'db' => 'mongodb', 'class' => 'yii\\mongodb\\debug\\MongoDbPanel' ],
 		],
