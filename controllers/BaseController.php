@@ -24,7 +24,7 @@ class BaseController extends Controller {
 		'crime_message/map' => 'crime-message/map',
 		'crime_message/crimes' => 'crime-message/crimes',
 	];
-	
+
 	private $modelName;
 	private $doAction;
 
