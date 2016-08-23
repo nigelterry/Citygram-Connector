@@ -30,9 +30,14 @@ use yii\web\Response;
             } else {
                 echo ',';
             }
+            $properties = $model->properties;
             if(isset($model->datetime)){
-                $model->datetime = $model->datetime->toDateTime()->format('c');
+                $properties['datetime'] = $model->datetime->toDateTime()->format('c');
+                unset($model->datetime);
             }
+
+            $properties['version'] = 2;
+            $model->properties = $properties;
             echo json_encode(ArrayHelper::toArray($model), $pretty ? JSON_PRETTY_PRINT : 0);
         }
         echo '], "count" : ' . $count . '}';
